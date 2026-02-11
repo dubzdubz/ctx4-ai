@@ -1,6 +1,6 @@
 import {
-  protectedResourceHandler,
   metadataCorsOptionsRequestHandler,
+  protectedResourceHandler,
 } from "mcp-handler";
 
 const supabaseProjectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";

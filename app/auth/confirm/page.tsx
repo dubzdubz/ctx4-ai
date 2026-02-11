@@ -1,7 +1,7 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { AuthConfirmClient } from "@/components/auth/auth-confirm-client";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function AuthConfirmPage({
   searchParams,

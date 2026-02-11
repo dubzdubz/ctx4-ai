@@ -1,6 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { OAuthAuthorizationForm } from "@/components/auth/oauth-authorization-form";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function OAuthAuthorizePage({
   searchParams,

@@ -1,5 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",

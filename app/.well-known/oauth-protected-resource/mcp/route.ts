@@ -1,6 +1,6 @@
 import {
-  protectedResourceHandler,
   metadataCorsOptionsRequestHandler,
+  protectedResourceHandler,
 } from "mcp-handler";
 
 // MCP-specific OAuth Protected Resource Metadata
