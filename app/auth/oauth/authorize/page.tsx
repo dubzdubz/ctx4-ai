@@ -3,83 +3,81 @@ import { redirect } from "next/navigation";
 import { OAuthAuthorizationForm } from "@/components/auth/oauth-authorization-form";
 
 export default async function OAuthAuthorizePage({
-	searchParams,
+  searchParams,
 }: {
-	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-	const params = await searchParams;
-	const authorizationId = params.authorization_id as string | undefined;
+  const params = await searchParams;
+  const authorizationId = params.authorization_id as string | undefined;
 
-	if (!authorizationId) {
-		return (
-			<div className="flex min-h-screen items-center justify-center">
-				<div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
-					<h2 className="mb-2 text-lg font-semibold text-destructive">
-						Invalid Authorization Request
-					</h2>
-					<p className="text-sm text-muted-foreground">
-						Missing authorization_id parameter. The OAuth flow may not have
-						been initiated correctly.
-					</p>
-				</div>
-			</div>
-		);
-	}
+  if (!authorizationId) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
+          <h2 className="mb-2 text-lg font-semibold text-destructive">
+            Invalid Authorization Request
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Missing authorization_id parameter. The OAuth flow may not have been
+            initiated correctly.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-	const supabase = await createClient();
+  const supabase = await createClient();
 
-	// Check if user is authenticated
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+  // Check if user is authenticated
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-	if (!user) {
-		// Redirect to login, preserving authorization_id so we return here after login
-		const next = `/auth/oauth/authorize?authorization_id=${encodeURIComponent(authorizationId)}`;
-		redirect(`/auth/login?next=${encodeURIComponent(next)}`);
-	}
+  if (!user) {
+    // Redirect to login, preserving authorization_id so we return here after login
+    const next = `/auth/oauth/authorize?authorization_id=${encodeURIComponent(authorizationId)}`;
+    redirect(`/auth/login?next=${encodeURIComponent(next)}`);
+  }
 
-	// Get authorization details from Supabase using the authorization_id.
-	// This returns either:
-	// - OAuthAuthorizationDetails (user needs to consent) — has `authorization_id` field
-	// - OAuthRedirect (user already consented) — has `redirect_url` field
-	const { data: authDetails, error } =
-		await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
+  // Get authorization details from Supabase using the authorization_id.
+  // This returns either:
+  // - OAuthAuthorizationDetails (user needs to consent) — has `authorization_id` field
+  // - OAuthRedirect (user already consented) — has `redirect_url` field
+  const { data: authDetails, error } =
+    await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
 
-	if (error || !authDetails) {
-		return (
-			<div className="flex min-h-screen items-center justify-center">
-				<div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
-					<h2 className="mb-2 text-lg font-semibold text-destructive">
-						Authorization Error
-					</h2>
-					<p className="text-sm text-muted-foreground">
-						{error?.message || "Invalid or expired authorization request."}
-					</p>
-				</div>
-			</div>
-		);
-	}
+  if (error || !authDetails) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
+          <h2 className="mb-2 text-lg font-semibold text-destructive">
+            Authorization Error
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {error?.message || "Invalid or expired authorization request."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-	// If the user has already consented, redirect immediately
-	if ("redirect_url" in authDetails) {
-		redirect(authDetails.redirect_url);
-	}
+  // If the user has already consented, redirect immediately
+  if ("redirect_url" in authDetails) {
+    redirect(authDetails.redirect_url);
+  }
 
-	// User needs to consent — show the consent page
-	const scopes = authDetails.scope?.trim()
-		? authDetails.scope.split(" ")
-		: [];
+  // User needs to consent — show the consent page
+  const scopes = authDetails.scope?.trim() ? authDetails.scope.split(" ") : [];
 
-	return (
-		<div className="flex min-h-screen items-center justify-center px-4">
-			<OAuthAuthorizationForm
-				user={user}
-				authorizationId={authorizationId}
-				clientName={authDetails.client.name}
-				redirectUri={authDetails.redirect_uri}
-				scopes={scopes}
-			/>
-		</div>
-	);
+  return (
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <OAuthAuthorizationForm
+        user={user}
+        authorizationId={authorizationId}
+        clientName={authDetails.client.name}
+        redirectUri={authDetails.redirect_uri}
+        scopes={scopes}
+      />
+    </div>
+  );
 }

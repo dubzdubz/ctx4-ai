@@ -1,11 +1,11 @@
-import { createClient } from "@/lib/supabase/server"
-import { LogoutButton } from "@/components/auth/logout-button"
-import { LinkButton } from "@/components/ui/link-button"
+import { createClient } from "@/lib/supabase/server";
+import { LogoutButton } from "@/components/auth/logout-button";
+import { LinkButton } from "@/components/ui/link-button";
 
 export default async function Page() {
-  const supabase = await createClient()
-  const { data } = await supabase.auth.getClaims()
-  const user = data?.claims
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6">
@@ -26,5 +26,5 @@ export default async function Page() {
         </LinkButton>
       )}
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 import {
-	protectedResourceHandler,
-	metadataCorsOptionsRequestHandler,
+  protectedResourceHandler,
+  metadataCorsOptionsRequestHandler,
 } from "mcp-handler";
 
 // MCP-specific OAuth Protected Resource Metadata
@@ -11,8 +11,8 @@ const supabaseProjectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const serverUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 const handler = protectedResourceHandler({
-	authServerUrls: [`${supabaseProjectUrl}/auth/v1`],
-	resourceUrl: serverUrl,
+  authServerUrls: [`${supabaseProjectUrl}/auth/v1`],
+  resourceUrl: serverUrl,
 });
 
 const corsHandler = metadataCorsOptionsRequestHandler();

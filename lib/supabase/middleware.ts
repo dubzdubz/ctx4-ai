@@ -1,5 +1,5 @@
-import { createServerClient } from "@supabase/ssr"
-import { type NextRequest, NextResponse } from "next/server"
+import { createServerClient } from "@supabase/ssr";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   // Skip session middleware for requests with Bearer auth (e.g., MCP transport).
@@ -11,7 +11,7 @@ export async function updateSession(request: NextRequest) {
 
   let supabaseResponse = NextResponse.next({
     request,
-  })
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,38 +19,38 @@ export async function updateSession(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          supabaseResponse = NextResponse.next({ request })
+            request.cookies.set(name, value),
+          );
+          supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
-    }
-  )
+    },
+  );
 
-  const { data } = await supabase.auth.getClaims()
-  const user = data?.claims
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims;
 
-	const isPublicPath =
-		request.nextUrl.pathname === "/" ||
-		request.nextUrl.pathname.startsWith("/.well-known") ||
-		request.nextUrl.pathname.startsWith("/mcp") ||
-		request.nextUrl.pathname.startsWith("/auth/login") ||
-		request.nextUrl.pathname.startsWith("/auth/error") ||
-		request.nextUrl.pathname.startsWith("/auth/confirm") ||
-		request.nextUrl.pathname.startsWith("/auth/oauth/authorize")
+  const isPublicPath =
+    request.nextUrl.pathname === "/" ||
+    request.nextUrl.pathname.startsWith("/.well-known") ||
+    request.nextUrl.pathname.startsWith("/mcp") ||
+    request.nextUrl.pathname.startsWith("/auth/login") ||
+    request.nextUrl.pathname.startsWith("/auth/error") ||
+    request.nextUrl.pathname.startsWith("/auth/confirm") ||
+    request.nextUrl.pathname.startsWith("/auth/oauth/authorize");
 
   if (!user && !isPublicPath) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/auth/login"
-    return NextResponse.redirect(url)
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/login";
+    return NextResponse.redirect(url);
   }
 
-  return supabaseResponse
+  return supabaseResponse;
 }

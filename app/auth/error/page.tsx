@@ -4,15 +4,15 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { LinkButton } from "@/components/ui/link-button"
+} from "@/components/ui/card";
+import { LinkButton } from "@/components/ui/link-button";
 
 export default async function AuthErrorPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string }>;
 }) {
-  const params = await searchParams
+  const params = await searchParams;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
@@ -34,5 +34,5 @@ export default async function AuthErrorPage({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
