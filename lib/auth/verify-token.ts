@@ -1,4 +1,10 @@
+import { createClient } from "@supabase/supabase-js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
+);
 
 export async function verifyToken(
   _req: Request,
@@ -8,23 +14,15 @@ export async function verifyToken(
     return undefined;
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
-
   try {
-    // Validate token by fetching user info from Supabase
-    const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
-      headers: {
-        Authorization: `Bearer ${bearerToken}`,
-        apikey: serviceRoleKey,
-      },
-    });
+    // Validate token against Supabase Auth server
+    const { data, error } = await supabase.auth.getUser(bearerToken);
 
-    if (!response.ok) {
+    if (error || !data.user) {
       return undefined;
     }
 
-    const user = await response.json();
+    const user = data.user;
 
     // Extract scopes from token metadata or user claims
     const scopes = user.app_metadata?.scopes || ["openid", "email", "profile"];
