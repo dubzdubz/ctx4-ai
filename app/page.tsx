@@ -1,14 +1,16 @@
 import {
   BotIcon,
   ExternalLinkIcon,
+  GithubIcon,
   KeyRoundIcon,
   MailIcon,
   PaletteIcon,
   ShieldCheckIcon,
+  UserIcon,
 } from "lucide-react";
-import { LogoutButton } from "@/components/auth/logout-button";
 import { LinkButton } from "@/components/ui/link-button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,7 +18,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase/server";
+
+const REPO_URL = "https://github.com/dubzdubz/next-mcp-starter";
 
 const features = [
   {
@@ -86,15 +89,19 @@ const references = [
   },
 ];
 
-export default async function Page() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
-
+export default function Page() {
   return (
     <div className="flex min-h-screen flex-col">
+      {/* Nav */}
+      <nav className="flex items-center justify-end gap-3 px-6 py-4">
+        <LinkButton href="/me" variant="outline" className="gap-1.5 text-sm">
+          <UserIcon className="size-4" />
+          Account
+        </LinkButton>
+      </nav>
+
       {/* Hero */}
-      <header className="flex flex-col items-center gap-6 px-6 pt-24 pb-16 text-center">
+      <header className="flex flex-col items-center gap-6 px-6 pt-12 pb-16 text-center">
         <Badge variant="outline" className="font-mono text-xs tracking-wide">
           Next.js + MCP + Supabase
         </Badge>
@@ -108,18 +115,19 @@ export default async function Page() {
         </p>
 
         <div className="mt-2 flex items-center gap-3">
-          {user ? (
-            <>
-              <span className="text-sm text-muted-foreground">
-                Signed in as {user.email}
-              </span>
-              <LogoutButton />
-            </>
-          ) : (
-            <LinkButton href="/auth/login" variant="default">
-              Sign in
-            </LinkButton>
-          )}
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="default" className="gap-2" nativeButton={false}>
+              <GithubIcon className="size-4" />
+              View on GitHub
+            </Button>
+          </a>
+          <LinkButton href="/me" variant="outline">
+            Sign in
+          </LinkButton>
         </div>
       </header>
 
@@ -154,7 +162,7 @@ export default async function Page() {
           <CardContent>
             <pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-sm leading-relaxed">
               <code>{`# Clone and install
-git clone https://github.com/your-username/next-mcp-starter.git
+git clone ${REPO_URL}.git
 cd next-mcp-starter
 pnpm install
 

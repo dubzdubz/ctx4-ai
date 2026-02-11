@@ -47,7 +47,7 @@ Supabase session middleware runs via `proxy.ts`, protecting browser routes while
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/next-mcp-starter.git
+git clone https://github.com/dubzdubz/next-mcp-starter.git
 cd next-mcp-starter
 pnpm install
 ```
@@ -137,6 +137,7 @@ npx @mcpjam/inspector@latest
 │   │   ├── error/page.tsx            # Auth error page
 │   │   ├── login/page.tsx            # Login page (magic link form)
 │   │   └── oauth/authorize/page.tsx  # OAuth consent screen
+│   ├── me/page.tsx                   # User profile (protected)
 │   ├── layout.tsx                    # Root layout
 │   ├── page.tsx                      # Landing page
 │   └── globals.css                   # Tailwind v4 + Shadcn theme
