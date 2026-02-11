@@ -1,5 +1,4 @@
 import { LogoutButton } from "@/components/auth/logout-button";
-import { LinkButton } from "@/components/ui/link-button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { LinkButton } from "@/components/ui/link-button";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function MePage() {

@@ -18,22 +18,22 @@ export default async function AuthErrorPage({
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-lg">
         <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Sorry, something went wrong</CardTitle>
-          <CardDescription>
-            {params?.error ? (
-              <>Error: {params.error}</>
-            ) : (
-              <>An unspecified error occurred.</>
-            )}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <LinkButton href="/auth/login" variant="outline" className="w-full">
-            Back to login
-          </LinkButton>
-        </CardContent>
-      </Card>
+          <CardHeader>
+            <CardTitle>Sorry, something went wrong</CardTitle>
+            <CardDescription>
+              {params?.error ? (
+                <>Error: {params.error}</>
+              ) : (
+                <>An unspecified error occurred.</>
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LinkButton href="/auth/login" variant="outline" className="w-full">
+              Back to login
+            </LinkButton>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

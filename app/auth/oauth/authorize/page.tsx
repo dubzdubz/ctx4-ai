@@ -15,13 +15,13 @@ export default async function OAuthAuthorizePage({
     return (
       <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-lg">
-        <Alert variant="destructive" className="w-full max-w-md">
-          <AlertTitle>Invalid Authorization Request</AlertTitle>
-          <AlertDescription>
-            Missing authorization_id parameter. The OAuth flow may not have been
-            initiated correctly.
-          </AlertDescription>
-        </Alert>
+          <Alert variant="destructive" className="w-full max-w-md">
+            <AlertTitle>Invalid Authorization Request</AlertTitle>
+            <AlertDescription>
+              Missing authorization_id parameter. The OAuth flow may not have
+              been initiated correctly.
+            </AlertDescription>
+          </Alert>
         </div>
       </div>
     );
@@ -51,12 +51,12 @@ export default async function OAuthAuthorizePage({
     return (
       <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-lg">
-        <Alert variant="destructive" className="w-full max-w-md">
-          <AlertTitle>Authorization Error</AlertTitle>
-          <AlertDescription>
-            {error?.message || "Invalid or expired authorization request."}
-          </AlertDescription>
-        </Alert>
+          <Alert variant="destructive" className="w-full max-w-md">
+            <AlertTitle>Authorization Error</AlertTitle>
+            <AlertDescription>
+              {error?.message || "Invalid or expired authorization request."}
+            </AlertDescription>
+          </Alert>
         </div>
       </div>
     );
@@ -73,12 +73,12 @@ export default async function OAuthAuthorizePage({
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-lg">
-      <OAuthAuthorizationForm
-        user={user}
-        authorizationId={authorizationId}
-        clientName={authDetails.client.name}
-        scopes={scopes}
-      />
+        <OAuthAuthorizationForm
+          user={user}
+          authorizationId={authorizationId}
+          clientName={authDetails.client.name}
+          scopes={scopes}
+        />
       </div>
     </div>
   );

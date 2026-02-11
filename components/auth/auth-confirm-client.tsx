@@ -55,19 +55,23 @@ export function AuthConfirmClient({ next }: { next: string }) {
     return (
       <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-lg">
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle>Invalid or expired link</CardTitle>
-            <CardDescription>
-              Please request a new magic link to sign in.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <LinkButton href="/auth/login" variant="outline" className="w-full">
-              Back to login
-            </LinkButton>
-          </CardContent>
-        </Card>
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle>Invalid or expired link</CardTitle>
+              <CardDescription>
+                Please request a new magic link to sign in.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <LinkButton
+                href="/auth/login"
+                variant="outline"
+                className="w-full"
+              >
+                Back to login
+              </LinkButton>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -76,12 +80,12 @@ export function AuthConfirmClient({ next }: { next: string }) {
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-lg">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Signing you in...</CardTitle>
-          <CardDescription>Please wait a moment</CardDescription>
-        </CardHeader>
-      </Card>
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Signing you in...</CardTitle>
+            <CardDescription>Please wait a moment</CardDescription>
+          </CardHeader>
+        </Card>
       </div>
     </div>
   );
