@@ -40,8 +40,9 @@ const handler = createMcpHandler(
 // Wrap handler with OAuth authentication
 const authHandler = withMcpAuth(handler, verifyToken, {
   required: true,
-  requiredScopes: [], // Supabase handles scope validation
+  requiredScopes: [], // Empty = no scope enforcement (optional: add required scopes like ["openid", "email"])
   resourceMetadataPath: "/.well-known/oauth-protected-resource",
+  resourceUrl: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
 });
 
 export { authHandler as GET, authHandler as POST };

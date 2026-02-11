@@ -29,9 +29,10 @@ This project includes an MCP (Model Context Protocol) server with full OAuth 2.1
 
 1. In Supabase Dashboard → **Authentication** → **OAuth Server**:
    - Enable **OAuth 2.1 Server**
-   - Enable **Dynamic Client Registration**
-   - Set **Authorization Endpoint URL** to: `http://localhost:3000/auth/oauth/authorize`
-   - Add allowed redirect URIs: `http://localhost:*` and `http://127.0.0.1:*`
+   - Set **Authorization Path** to: `/auth/oauth/authorize`
+   - (Optional) Enable **Dynamic Client Registration** to allow MCP clients to self-register
+     - With dynamic registration, clients provide their own redirect URIs during registration
+     - Without it, you'll need to manually register each OAuth client in the dashboard
 
 2. Add environment variables to `.env`:
    ```bash
