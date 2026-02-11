@@ -1,8 +1,6 @@
-# next-mcp-starter
+# ctx4.ai
 
-A **Next.js** starter template for building authenticated **MCP servers** with **Supabase** auth.
-
-Ship tools that AI clients can discover and call — with OAuth 2.1 built in.
+Your portable context layer for Claude & ChatGPT
 
 ---
 
@@ -47,8 +45,8 @@ Supabase session middleware runs via `proxy.ts`, protecting browser routes while
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/dubzdubz/next-mcp-starter.git
-cd next-mcp-starter
+git clone https://github.com/dubzdubz/ctx4-ai.git
+cd ctx4-ai
 pnpm install
 ```
 
@@ -97,7 +95,7 @@ Add the server to your MCP client (Cursor, VS Code, etc.):
 ```json
 {
   "servers": {
-    "next-mcp-starter": {
+    "ctx4-ai": {
       "url": "http://localhost:3000/sse",
       "type": "http"
     }
