@@ -1,6 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { LinkButton } from "@/components/ui/link-button";
 import { createClient } from "@/lib/supabase/client";
 
 export function AuthConfirmClient({ next }: { next: string }) {
@@ -46,19 +54,31 @@ export function AuthConfirmClient({ next }: { next: string }) {
   if (status === "error") {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
-        <p className="text-destructive">
-          Invalid or expired link. Please request a new magic link.
-        </p>
-        <a href="/auth/login" className="mt-4 text-sm underline">
-          Back to login
-        </a>
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Invalid or expired link</CardTitle>
+            <CardDescription>
+              Please request a new magic link to sign in.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LinkButton href="/auth/login" variant="outline" className="w-full">
+              Back to login
+            </LinkButton>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
-      <p className="text-muted-foreground">Signing you in...</p>
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Signing you in...</CardTitle>
+          <CardDescription>Please wait a moment</CardDescription>
+        </CardHeader>
+      </Card>
     </div>
   );
 }

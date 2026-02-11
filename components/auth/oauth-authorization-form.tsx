@@ -2,6 +2,7 @@
 
 import type { User } from "@supabase/supabase-js";
 import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +16,6 @@ interface OAuthAuthorizationFormProps {
   user: User;
   authorizationId: string;
   clientName: string;
-  redirectUri: string;
   scopes: string[];
 }
 
@@ -23,7 +23,6 @@ export function OAuthAuthorizationForm({
   user,
   authorizationId,
   clientName,
-  redirectUri,
   scopes,
 }: OAuthAuthorizationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -81,47 +80,35 @@ export function OAuthAuthorizationForm({
           This application wants to access your account
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         {/* User info */}
-        <div className="rounded-lg border p-3">
+        <div className="space-y-1">
           <p className="text-sm text-muted-foreground">Signed in as</p>
           <p className="font-medium">{user.email}</p>
         </div>
 
-        {/* Client info */}
-        <div className="rounded-lg border p-3">
-          <p className="text-sm text-muted-foreground">Application</p>
-          <p className="font-medium">{clientName}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Redirect URI: {redirectUri}
-          </p>
-        </div>
-
         {/* Requested permissions */}
         {scopes.length > 0 && (
-          <div>
-            <p className="mb-2 text-sm font-medium">
+          <div className="space-y-3">
+            <p className="text-sm font-medium">
               This application is requesting permission to:
             </p>
-            <ul className="space-y-2">
+            <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
               {scopes.map((scope) => (
-                <li key={scope} className="flex items-start gap-2 text-sm">
-                  <span className="mt-0.5 text-primary">•</span>
-                  <span>{getScopeDescription(scope)}</span>
-                </li>
+                <li key={scope}>{getScopeDescription(scope)}</li>
               ))}
             </ul>
           </div>
         )}
 
         {error && (
-          <div className="rounded-lg border border-destructive bg-destructive/10 p-3">
-            <p className="text-sm text-destructive">{error}</p>
-          </div>
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
 
         {/* Action buttons */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 pt-2">
           <Button
             onClick={() => handleDecision(false)}
             variant="outline"
@@ -138,12 +125,6 @@ export function OAuthAuthorizationForm({
             {isLoading ? "Processing..." : "Authorize"}
           </Button>
         </div>
-
-        <p className="text-xs text-muted-foreground">
-          By authorizing, you allow this application to access the requested
-          information. You can revoke access at any time from your account
-          settings.
-        </p>
       </CardContent>
     </Card>
   );

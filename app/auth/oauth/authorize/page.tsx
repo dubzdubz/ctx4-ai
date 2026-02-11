@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { OAuthAuthorizationForm } from "@/components/auth/oauth-authorization-form";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function OAuthAuthorizePage({
@@ -12,16 +13,14 @@ export default async function OAuthAuthorizePage({
 
   if (!authorizationId) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
-          <h2 className="mb-2 text-lg font-semibold text-destructive">
-            Invalid Authorization Request
-          </h2>
-          <p className="text-sm text-muted-foreground">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <Alert variant="destructive" className="w-full max-w-md">
+          <AlertTitle>Invalid Authorization Request</AlertTitle>
+          <AlertDescription>
             Missing authorization_id parameter. The OAuth flow may not have been
             initiated correctly.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
@@ -48,15 +47,13 @@ export default async function OAuthAuthorizePage({
 
   if (error || !authDetails) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
-          <h2 className="mb-2 text-lg font-semibold text-destructive">
-            Authorization Error
-          </h2>
-          <p className="text-sm text-muted-foreground">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <Alert variant="destructive" className="w-full max-w-md">
+          <AlertTitle>Authorization Error</AlertTitle>
+          <AlertDescription>
             {error?.message || "Invalid or expired authorization request."}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
@@ -75,7 +72,6 @@ export default async function OAuthAuthorizePage({
         user={user}
         authorizationId={authorizationId}
         clientName={authDetails.client.name}
-        redirectUri={authDetails.redirect_uri}
         scopes={scopes}
       />
     </div>
