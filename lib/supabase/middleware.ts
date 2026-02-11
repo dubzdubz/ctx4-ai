@@ -2,10 +2,17 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
-  // Skip session middleware for requests with Bearer auth (e.g., MCP transport).
-  // These requests authenticate via token, not cookies, and handle their own auth.
   const authHeader = request.headers.get("authorization");
-  if (authHeader?.startsWith("Bearer ")) {
+  
+  // Skip session middleware ONLY for MCP transport routes with Bearer auth.
+  // These routes (e.g., /mcp, /sse, /streamable-http) authenticate via token validation
+  // in their handlers using withMcpAuth. All other routes must use cookie-based auth.
+  const isMcpTransportPath =
+    request.nextUrl.pathname === "/mcp" ||
+    request.nextUrl.pathname === "/sse" ||
+    request.nextUrl.pathname === "/streamable-http";
+  
+  if (authHeader?.startsWith("Bearer ") && isMcpTransportPath) {
     return NextResponse.next({ request });
   }
 
