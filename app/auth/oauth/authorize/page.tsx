@@ -7,32 +7,10 @@ export default async function OAuthAuthorizePage({
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-	const supabase = await createClient();
 	const params = await searchParams;
+	const authorizationId = params.authorization_id as string | undefined;
 
-	// Check if user is authenticated
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		// Redirect to login with return URL
-		const returnUrl = new URL("/auth/login", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
-		returnUrl.searchParams.set("next", `/auth/oauth/authorize?${new URLSearchParams(params as Record<string, string>).toString()}`);
-		redirect(returnUrl.toString());
-	}
-
-	// Extract OAuth parameters from query string
-	const clientId = params.client_id as string | undefined;
-	const redirectUri = params.redirect_uri as string | undefined;
-	const state = params.state as string | undefined;
-	const scope = params.scope as string | undefined;
-	const codeChallenge = params.code_challenge as string | undefined;
-	const codeChallengeMethod = params.code_challenge_method as string | undefined;
-	const responseType = params.response_type as string | undefined;
-
-	// Validate required OAuth parameters
-	if (!clientId || !redirectUri || !responseType) {
+	if (!authorizationId) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
 				<div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
@@ -40,27 +18,67 @@ export default async function OAuthAuthorizePage({
 						Invalid Authorization Request
 					</h2>
 					<p className="text-sm text-muted-foreground">
-						Missing required OAuth parameters. Please contact the application
-						developer.
+						Missing authorization_id parameter. The OAuth flow may not have
+						been initiated correctly.
 					</p>
 				</div>
 			</div>
 		);
 	}
 
-	// Parse scopes
-	const scopes = scope?.split(" ") || [];
+	const supabase = await createClient();
+
+	// Check if user is authenticated
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
+
+	if (!user) {
+		// Redirect to login, preserving authorization_id so we return here after login
+		const next = `/auth/oauth/authorize?authorization_id=${encodeURIComponent(authorizationId)}`;
+		redirect(`/auth/login?next=${encodeURIComponent(next)}`);
+	}
+
+	// Get authorization details from Supabase using the authorization_id.
+	// This returns either:
+	// - OAuthAuthorizationDetails (user needs to consent) — has `authorization_id` field
+	// - OAuthRedirect (user already consented) — has `redirect_url` field
+	const { data: authDetails, error } =
+		await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
+
+	if (error || !authDetails) {
+		return (
+			<div className="flex min-h-screen items-center justify-center">
+				<div className="w-full max-w-md rounded-lg border border-destructive bg-destructive/10 p-6">
+					<h2 className="mb-2 text-lg font-semibold text-destructive">
+						Authorization Error
+					</h2>
+					<p className="text-sm text-muted-foreground">
+						{error?.message || "Invalid or expired authorization request."}
+					</p>
+				</div>
+			</div>
+		);
+	}
+
+	// If the user has already consented, redirect immediately
+	if ("redirect_url" in authDetails) {
+		redirect(authDetails.redirect_url);
+	}
+
+	// User needs to consent — show the consent page
+	const scopes = authDetails.scope?.trim()
+		? authDetails.scope.split(" ")
+		: [];
 
 	return (
 		<div className="flex min-h-screen items-center justify-center px-4">
 			<OAuthAuthorizationForm
 				user={user}
-				clientId={clientId}
-				redirectUri={redirectUri}
-				state={state}
+				authorizationId={authorizationId}
+				clientName={authDetails.client.name}
+				redirectUri={authDetails.redirect_uri}
 				scopes={scopes}
-				codeChallenge={codeChallenge}
-				codeChallengeMethod={codeChallengeMethod}
 			/>
 		</div>
 	);

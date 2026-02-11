@@ -13,74 +13,52 @@ import type { User } from "@supabase/supabase-js";
 
 interface OAuthAuthorizationFormProps {
 	user: User;
-	clientId: string;
+	authorizationId: string;
+	clientName: string;
 	redirectUri: string;
-	state?: string;
 	scopes: string[];
-	codeChallenge?: string;
-	codeChallengeMethod?: string;
 }
 
 export function OAuthAuthorizationForm({
 	user,
-	clientId,
+	authorizationId,
+	clientName,
 	redirectUri,
-	state,
 	scopes,
-	codeChallenge,
-	codeChallengeMethod,
 }: OAuthAuthorizationFormProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const handleApprove = async () => {
+	const handleDecision = async (approved: boolean) => {
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+			const response = await fetch("/api/oauth/approve", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ authorizationId, approved }),
+			});
 
-			// Build authorization request to Supabase
-			const authUrl = new URL(`${supabaseUrl}/auth/v1/authorize`);
-			authUrl.searchParams.set("client_id", clientId);
-			authUrl.searchParams.set("redirect_uri", redirectUri);
-			authUrl.searchParams.set("response_type", "code");
-			authUrl.searchParams.set("scope", scopes.join(" "));
+			const data = await response.json();
 
-			if (state) {
-				authUrl.searchParams.set("state", state);
+			if (!response.ok) {
+				throw new Error(data.error || "Authorization failed");
 			}
 
-			if (codeChallenge && codeChallengeMethod) {
-				authUrl.searchParams.set("code_challenge", codeChallenge);
-				authUrl.searchParams.set("code_challenge_method", codeChallengeMethod);
+			// Redirect to the URL provided by Supabase (back to the OAuth client)
+			if (data.redirectUrl) {
+				window.location.href = data.redirectUrl;
 			}
-
-			// Redirect to Supabase authorization endpoint
-			window.location.href = authUrl.toString();
 		} catch (err) {
 			console.error("Authorization error:", err);
 			setError(
-				err instanceof Error ? err.message : "Failed to authorize application",
+				err instanceof Error
+					? err.message
+					: "Failed to process authorization",
 			);
 			setIsLoading(false);
 		}
-	};
-
-	const handleDeny = () => {
-		// Redirect back to client with error
-		const errorUrl = new URL(redirectUri);
-		errorUrl.searchParams.set("error", "access_denied");
-		errorUrl.searchParams.set(
-			"error_description",
-			"User denied authorization",
-		);
-
-		if (state) {
-			errorUrl.searchParams.set("state", state);
-		}
-
-		window.location.href = errorUrl.toString();
 	};
 
 	// Get user-friendly scope descriptions
@@ -100,9 +78,9 @@ export function OAuthAuthorizationForm({
 	return (
 		<Card className="w-full max-w-md">
 			<CardHeader>
-				<CardTitle>Authorize Application</CardTitle>
+				<CardTitle>Authorize {clientName}</CardTitle>
 				<CardDescription>
-					An application is requesting access to your account
+					This application wants to access your account
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-4">
@@ -115,29 +93,31 @@ export function OAuthAuthorizationForm({
 				{/* Client info */}
 				<div className="rounded-lg border p-3">
 					<p className="text-sm text-muted-foreground">Application</p>
-					<p className="font-medium">{clientId}</p>
+					<p className="font-medium">{clientName}</p>
 					<p className="mt-1 text-xs text-muted-foreground">
 						Redirect URI: {redirectUri}
 					</p>
 				</div>
 
 				{/* Requested permissions */}
-				<div>
-					<p className="mb-2 text-sm font-medium">
-						This application is requesting permission to:
-					</p>
-					<ul className="space-y-2">
-						{scopes.map((scope) => (
-							<li
-								key={scope}
-								className="flex items-start gap-2 text-sm"
-							>
-								<span className="mt-0.5 text-primary">•</span>
-								<span>{getScopeDescription(scope)}</span>
-							</li>
-						))}
-					</ul>
-				</div>
+				{scopes.length > 0 && (
+					<div>
+						<p className="mb-2 text-sm font-medium">
+							This application is requesting permission to:
+						</p>
+						<ul className="space-y-2">
+							{scopes.map((scope) => (
+								<li
+									key={scope}
+									className="flex items-start gap-2 text-sm"
+								>
+									<span className="mt-0.5 text-primary">•</span>
+									<span>{getScopeDescription(scope)}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
 
 				{error && (
 					<div className="rounded-lg border border-destructive bg-destructive/10 p-3">
@@ -148,7 +128,7 @@ export function OAuthAuthorizationForm({
 				{/* Action buttons */}
 				<div className="flex gap-3">
 					<Button
-						onClick={handleDeny}
+						onClick={() => handleDecision(false)}
 						variant="outline"
 						disabled={isLoading}
 						className="flex-1"
@@ -156,11 +136,11 @@ export function OAuthAuthorizationForm({
 						Deny
 					</Button>
 					<Button
-						onClick={handleApprove}
+						onClick={() => handleDecision(true)}
 						disabled={isLoading}
 						className="flex-1"
 					>
-						{isLoading ? "Authorizing..." : "Authorize"}
+						{isLoading ? "Processing..." : "Authorize"}
 					</Button>
 				</div>
 

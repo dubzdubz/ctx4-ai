@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +23,11 @@ export function MagicLinkForm({
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [sent, setSent] = useState(false)
+  const searchParams = useSearchParams()
+
+  // Preserve the `next` param so users return to the right page after login
+  // (e.g., the OAuth consent page during MCP auth flow)
+  const next = searchParams.get("next") || "/"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +39,7 @@ export function MagicLinkForm({
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm?next=/`,
+          emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(next)}`,
         },
       })
       if (error) throw error
