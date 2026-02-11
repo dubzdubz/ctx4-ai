@@ -1,5 +1,6 @@
-import { createMcpHandler } from "mcp-handler";
+import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { z } from "zod/v3";
+import { verifyToken } from "@/lib/auth/verify-token";
 
 const handler = createMcpHandler(
 	(server) => {
@@ -12,10 +13,18 @@ const handler = createMcpHandler(
 					sides: z.number().int().min(2),
 				},
 			},
-			async ({ sides }) => {
+			async ({ sides }, extra) => {
+				// Access authenticated user info
+				const userEmail = extra.authInfo?.extra?.email;
+
 				const value = 1 + Math.floor(Math.random() * sides);
 				return {
-					content: [{ type: "text", text: `🎲 You rolled a ${value}!` }],
+					content: [
+						{
+							type: "text",
+							text: `🎲 ${userEmail || "User"} rolled a ${value}!`,
+						},
+					],
 				};
 			},
 		);
@@ -28,4 +37,11 @@ const handler = createMcpHandler(
 	},
 );
 
-export { handler as GET, handler as POST };
+// Wrap handler with OAuth authentication
+const authHandler = withMcpAuth(handler, verifyToken, {
+	required: true,
+	requiredScopes: [], // Supabase handles scope validation
+	resourceMetadataPath: "/.well-known/oauth-protected-resource",
+});
+
+export { authHandler as GET, authHandler as POST };

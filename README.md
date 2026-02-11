@@ -20,3 +20,66 @@ Magic link auth is configured. To make it work:
 In Supabase Dashboard → **Authentication** → **URL Configuration**:
 - Set **Site URL** to `http://localhost:3000` (or your production URL)
 - Add `http://localhost:3000/auth/confirm` to **Redirect URLs**
+
+## MCP Server with OAuth 2.1 Authorization
+
+This project includes an MCP (Model Context Protocol) server with full OAuth 2.1 authorization support.
+
+### Setup OAuth 2.1
+
+1. In Supabase Dashboard → **Authentication** → **OAuth Server**:
+   - Enable **OAuth 2.1 Server**
+   - Enable **Dynamic Client Registration**
+   - Set **Authorization Endpoint URL** to: `http://localhost:3000/auth/oauth/authorize`
+   - Add allowed redirect URIs: `http://localhost:*` and `http://127.0.0.1:*`
+
+2. Add environment variables to `.env`:
+   ```bash
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   ```
+
+### Connecting an MCP Client
+
+1. In your MCP client (e.g., VS Code), add the server:
+   ```json
+   {
+     "mcp.servers": {
+       "ctx4-ai": {
+         "url": "http://localhost:3000/sse",
+         "type": "http"
+       }
+     }
+   }
+   ```
+
+2. The client will automatically:
+   - Discover OAuth configuration from Supabase
+   - Register itself dynamically
+   - Open browser for user authorization
+   - Exchange tokens and make authenticated requests
+
+### Available Tools
+
+- **roll_dice**: Roll a dice with a specified number of sides (authenticated)
+
+### Testing
+
+```bash
+# Test OAuth discovery
+curl https://YOUR_PROJECT.supabase.co/.well-known/oauth-authorization-server/auth/v1
+
+# Test Protected Resource Metadata
+curl http://localhost:3000/.well-known/oauth-protected-resource
+
+# Test unauthenticated request (should return 401)
+curl -v -X POST http://localhost:3000/sse \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"initialize","params":{},"id":1}'
+```
+
+## Learn More
+
+- [Supabase OAuth 2.1 Server](https://supabase.com/docs/guides/auth/oauth-server)
+- [MCP Authorization Specification](https://modelcontextprotocol.io/specification/draft/basic/authorization)
+- [Next.js Documentation](https://nextjs.org/docs)

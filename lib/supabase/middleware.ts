@@ -30,12 +30,14 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims()
   const user = data?.claims
 
-  const isPublicPath =
-    request.nextUrl.pathname === "/" ||
-    request.nextUrl.pathname.startsWith("/mcp") ||
-    request.nextUrl.pathname.startsWith("/auth/login") ||
-    request.nextUrl.pathname.startsWith("/auth/error") ||
-    request.nextUrl.pathname.startsWith("/auth/confirm")
+	const isPublicPath =
+		request.nextUrl.pathname === "/" ||
+		request.nextUrl.pathname.startsWith("/.well-known") ||
+		request.nextUrl.pathname.startsWith("/mcp") ||
+		request.nextUrl.pathname.startsWith("/auth/login") ||
+		request.nextUrl.pathname.startsWith("/auth/error") ||
+		request.nextUrl.pathname.startsWith("/auth/confirm") ||
+		request.nextUrl.pathname.startsWith("/auth/oauth/authorize")
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone()
