@@ -5,8 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "ctx4.ai",
-  description: "Your portable context layer for Claude & ChatGPT",
+  title: "Next MCP Starter",
+  description:
+    "A Next.js starter template with MCP server support and Supabase auth",
 };
 
 export default function RootLayout({
