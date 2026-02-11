@@ -115,12 +115,16 @@ export default function Page() {
         </p>
 
         <div className="mt-2 flex items-center gap-3">
-          <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-            <Button variant="default" className="gap-2" nativeButton={false}>
-              <GithubIcon className="size-4" />
-              View on GitHub
-            </Button>
-          </a>
+          <LinkButton
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="default"
+            className="gap-2"
+          >
+            <GithubIcon className="size-4" />
+            View on GitHub
+          </LinkButton>
           <LinkButton href="/me" variant="outline">
             Sign in
           </LinkButton>
