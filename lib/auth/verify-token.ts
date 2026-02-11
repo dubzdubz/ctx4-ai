@@ -65,7 +65,9 @@ export async function verifyToken(
     // Validate issuer and audience (optional but recommended)
     const expectedIssuer = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1`;
     if (claims.iss !== expectedIssuer) {
-      console.warn(`Token issuer mismatch: expected ${expectedIssuer}, got ${claims.iss}`);
+      console.warn(
+        `Token issuer mismatch: expected ${expectedIssuer}, got ${claims.iss}`,
+      );
       return undefined;
     }
 
