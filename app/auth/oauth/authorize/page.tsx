@@ -13,7 +13,8 @@ export default async function OAuthAuthorizePage({
 
   if (!authorizationId) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+        <div className="w-full max-w-lg">
         <Alert variant="destructive" className="w-full max-w-md">
           <AlertTitle>Invalid Authorization Request</AlertTitle>
           <AlertDescription>
@@ -21,6 +22,7 @@ export default async function OAuthAuthorizePage({
             initiated correctly.
           </AlertDescription>
         </Alert>
+        </div>
       </div>
     );
   }
@@ -47,13 +49,15 @@ export default async function OAuthAuthorizePage({
 
   if (error || !authDetails) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+        <div className="w-full max-w-lg">
         <Alert variant="destructive" className="w-full max-w-md">
           <AlertTitle>Authorization Error</AlertTitle>
           <AlertDescription>
             {error?.message || "Invalid or expired authorization request."}
           </AlertDescription>
         </Alert>
+        </div>
       </div>
     );
   }
@@ -67,13 +71,15 @@ export default async function OAuthAuthorizePage({
   const scopes = authDetails.scope?.trim() ? authDetails.scope.split(" ") : [];
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+      <div className="w-full max-w-lg">
       <OAuthAuthorizationForm
         user={user}
         authorizationId={authorizationId}
         clientName={authDetails.client.name}
         scopes={scopes}
       />
+      </div>
     </div>
   );
 }

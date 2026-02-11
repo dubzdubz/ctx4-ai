@@ -15,8 +15,9 @@ export default async function AuthErrorPage({
   const params = await searchParams;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <Card className="w-full max-w-sm">
+    <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+      <div className="w-full max-w-lg">
+        <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Sorry, something went wrong</CardTitle>
           <CardDescription>
@@ -33,6 +34,7 @@ export default async function AuthErrorPage({
           </LinkButton>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
