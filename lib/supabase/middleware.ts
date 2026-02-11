@@ -21,7 +21,9 @@ function isMcpTransportPath(pathname: string): boolean {
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATH_PREFIXES.some((prefix) =>
-    prefix === "/" ? pathname === "/" : pathname === prefix || pathname.startsWith(`${prefix}/`),
+    prefix === "/"
+      ? pathname === "/"
+      : pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 }
 
