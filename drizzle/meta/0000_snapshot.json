@@ -87,9 +87,7 @@
         "user_github_configs_user_id_unique": {
           "name": "user_github_configs_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},

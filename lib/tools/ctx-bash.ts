@@ -44,9 +44,7 @@ Any changes are automatically committed and pushed to GitHub.`,
         const { stdout, stderr, exitCode } = await manager.runCommand(command);
 
         const endTime = Date.now();
-        console.log(
-          `[ctx_bash] command executed in ${endTime - startTime}ms`,
-        );
+        console.log(`[ctx_bash] command executed in ${endTime - startTime}ms`);
 
         const output = stdout || stderr || "(no output)";
 
