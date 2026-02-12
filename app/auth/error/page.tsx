@@ -1,10 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/link-button";
 
 export default async function AuthErrorPage({
@@ -16,24 +9,20 @@ export default async function AuthErrorPage({
 
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
-      <div className="w-full max-w-lg">
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle>Sorry, something went wrong</CardTitle>
-            <CardDescription>
-              {params?.error ? (
-                <>Error: {params.error}</>
-              ) : (
-                <>An unspecified error occurred.</>
-              )}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <LinkButton href="/auth/login" variant="outline" className="w-full">
-              Back to login
-            </LinkButton>
-          </CardContent>
-        </Card>
+      <div className="w-full max-w-sm space-y-4">
+        <h1 className="text-2xl font-bold tracking-tight">
+          Sorry, something went wrong
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {params?.error ? (
+            <>Error: {params.error}</>
+          ) : (
+            <>An unspecified error occurred.</>
+          )}
+        </p>
+        <LinkButton href="/auth/login" variant="outline" className="w-full">
+          Back to login
+        </LinkButton>
       </div>
     </div>
   );

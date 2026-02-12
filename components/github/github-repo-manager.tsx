@@ -3,13 +3,6 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { FieldError } from "@/components/ui/field";
 import { LinkButton } from "@/components/ui/link-button";
 
@@ -180,18 +173,18 @@ export function GithubRepoManager({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">GitHub</CardTitle>
-        <CardDescription>
+    <section className="space-y-4">
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground">GitHub</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           {showRepoSelection
             ? "Select a repository to use as your context store."
             : config
               ? "Your context repository is connected."
               : "Connect a GitHub repository to use as your context store."}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </p>
+      </div>
+      <div className="space-y-4">
         {error && <FieldError>{error}</FieldError>}
 
         {/* Show repo selection if installation_id is present */}
@@ -333,7 +326,7 @@ export function GithubRepoManager({
             GitHub App not configured.
           </p>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }

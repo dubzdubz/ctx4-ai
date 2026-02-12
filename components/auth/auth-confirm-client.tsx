@@ -1,13 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/link-button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -54,24 +47,16 @@ export function AuthConfirmClient({ next }: { next: string }) {
   if (status === "error") {
     return (
       <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
-        <div className="w-full max-w-lg">
-          <Card className="w-full max-w-sm">
-            <CardHeader>
-              <CardTitle>Invalid or expired link</CardTitle>
-              <CardDescription>
-                Please request a new magic link to sign in.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <LinkButton
-                href="/auth/login"
-                variant="outline"
-                className="w-full"
-              >
-                Back to login
-              </LinkButton>
-            </CardContent>
-          </Card>
+        <div className="w-full max-w-sm space-y-4">
+          <h1 className="text-2xl font-bold tracking-tight">
+            Invalid or expired link
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Please request a new magic link to sign in.
+          </p>
+          <LinkButton href="/auth/login" variant="outline" className="w-full">
+            Back to login
+          </LinkButton>
         </div>
       </div>
     );
@@ -79,13 +64,9 @@ export function AuthConfirmClient({ next }: { next: string }) {
 
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
-      <div className="w-full max-w-lg">
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle>Signing you in...</CardTitle>
-            <CardDescription>Please wait a moment</CardDescription>
-          </CardHeader>
-        </Card>
+      <div className="w-full max-w-sm space-y-2">
+        <h1 className="text-2xl font-bold tracking-tight">Signing you in...</h1>
+        <p className="text-sm text-muted-foreground">Please wait a moment</p>
       </div>
     </div>
   );

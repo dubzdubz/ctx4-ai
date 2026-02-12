@@ -4,13 +4,6 @@ import type { User } from "@supabase/supabase-js";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 interface OAuthAuthorizationFormProps {
   user: User;
@@ -73,59 +66,60 @@ export function OAuthAuthorizationForm({
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Authorize {clientName}</CardTitle>
-        <CardDescription>
+    <div className="w-full max-w-md space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Authorize {clientName}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           This application wants to access your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* User info */}
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Signed in as</p>
-          <p className="font-medium">{user.email}</p>
+        </p>
+      </div>
+
+      {/* User info */}
+      <div className="space-y-1">
+        <p className="text-sm text-muted-foreground">Signed in as</p>
+        <p className="font-medium">{user.email}</p>
+      </div>
+
+      {/* Requested permissions */}
+      {scopes.length > 0 && (
+        <div className="space-y-3">
+          <p className="text-sm font-medium">
+            This application is requesting permission to:
+          </p>
+          <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
+            {scopes.map((scope) => (
+              <li key={scope}>{getScopeDescription(scope)}</li>
+            ))}
+          </ul>
         </div>
+      )}
 
-        {/* Requested permissions */}
-        {scopes.length > 0 && (
-          <div className="space-y-3">
-            <p className="text-sm font-medium">
-              This application is requesting permission to:
-            </p>
-            <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
-              {scopes.map((scope) => (
-                <li key={scope}>{getScopeDescription(scope)}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {/* Action buttons */}
-        <div className="flex gap-3 pt-2">
-          <Button
-            onClick={() => handleDecision(false)}
-            variant="outline"
-            disabled={isLoading}
-            className="flex-1"
-          >
-            Deny
-          </Button>
-          <Button
-            onClick={() => handleDecision(true)}
-            disabled={isLoading}
-            className="flex-1"
-          >
-            {isLoading ? "Processing..." : "Authorize"}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      {/* Action buttons */}
+      <div className="flex gap-3 pt-2">
+        <Button
+          onClick={() => handleDecision(false)}
+          variant="outline"
+          disabled={isLoading}
+          className="flex-1"
+        >
+          Deny
+        </Button>
+        <Button
+          onClick={() => handleDecision(true)}
+          disabled={isLoading}
+          className="flex-1"
+        >
+          {isLoading ? "Processing..." : "Authorize"}
+        </Button>
+      </div>
+    </div>
   );
 }

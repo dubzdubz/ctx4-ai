@@ -4,13 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Field,
   FieldError,
   FieldGroup,
@@ -58,51 +51,47 @@ export function MagicLinkForm({
 
   if (sent) {
     return (
-      <Card className={cn("w-full max-w-sm", className)} {...props}>
-        <CardHeader>
-          <CardTitle>Check your email</CardTitle>
-          <CardDescription>
-            We&apos;ve sent a magic link to <strong>{email}</strong>. Click the
-            link to sign in.
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div className={cn("w-full max-w-sm space-y-4", className)} {...props}>
+        <h1 className="text-2xl font-bold tracking-tight">Check your email</h1>
+        <p className="text-sm text-muted-foreground">
+          We&apos;ve sent a magic link to <strong>{email}</strong>. Click the
+          link to sign in.
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card className={cn("w-full max-w-sm", className)} {...props}>
-      <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>
+    <div className={cn("w-full max-w-sm space-y-6", className)} {...props}>
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold tracking-tight">Sign in</h1>
+        <p className="text-sm text-muted-foreground">
           Enter your email and we&apos;ll send you a magic link to sign in.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit}>
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-                aria-invalid={!!error}
-              />
-              {error && <FieldError>{error}</FieldError>}
-            </Field>
-            <Field orientation="horizontal">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Sending..." : "Send magic link"}
-              </Button>
-            </Field>
-          </FieldGroup>
-        </form>
-      </CardContent>
-    </Card>
+        </p>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+              aria-invalid={!!error}
+            />
+            {error && <FieldError>{error}</FieldError>}
+          </Field>
+          <Field orientation="horizontal">
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Sending..." : "Send magic link"}
+            </Button>
+          </Field>
+        </FieldGroup>
+      </form>
+    </div>
   );
 }
