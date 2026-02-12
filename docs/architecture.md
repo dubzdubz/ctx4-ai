@@ -182,13 +182,15 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 
 ### Sandbox Manager (`lib/sandbox/manager.ts`)
 
-Manages a single Vercel Sandbox instance per session:
-- Creates sandbox seeded from git repo on first tool call (lazy initialization)
+Manages per-user Vercel Sandbox instances via `SandboxManagerPool` (`lib/sandbox/pool.ts`):
+- **Pool**: In-memory `Map<userId, SandboxManager>` cache — each user gets their own sandbox
+- Constructor accepts `userId` and config (installationId, repoUrl, defaultBranch)
+- Creates sandbox seeded from user's GitHub repo on first tool call (lazy initialization)
+- Uses `getInstallationToken()` for git auth (refreshes after 50 min)
 - Reuses existing sandbox via local expiry tracking (avoids `Sandbox.get()` round-trips)
 - Extends sandbox timeout when near expiry, recreates if expired
 - Deduplicates concurrent `ensure()` and `extendTimeout()` calls
 - Configures git credentials inside sandbox
-- Singleton pattern for current single-user/small-team mode
 
 ### Storage Layer
 
@@ -245,10 +247,12 @@ server.registerTool(
 - **Language:** TypeScript
 - **Sandbox:** Vercel Sandbox (Firecracker microVM)
 - **Storage:** Ephemeral sandbox filesystem + Git
+- **Database:** Drizzle ORM + Supabase PostgreSQL
+- **GitHub:** Octokit (GitHub App with installation tokens)
 - **Auth:**
   - Supabase OAuth 2.0 (user authentication)
   - Vercel OIDC token (sandbox access)
-  - GitHub PAT (repository access)
+  - GitHub App installation tokens (repository access)
 - **Deployment:** Vercel (or any Next.js host)
 
 ## Multi-User Support
@@ -267,7 +271,7 @@ server.registerTool(
 - **Snapshots:** Snapshot sandbox after git clone to skip re-cloning on next session
 - **Background git push:** Return output immediately, push in background
 - **`git ls-remote` optimization:** Check if remote HEAD changed before pulling
-- **Multi-user:** User auth, one sandbox per user
+- **Redis sandbox pool:** Replace in-memory Map with Redis for horizontal scaling
 - **Platform migration:** SandboxManager abstraction supports swapping to Modal, E2B, etc.
 - **Conflict Resolution:** Beyond last-write-wins
 - **Custom Web UI:** Rich editing and visualization

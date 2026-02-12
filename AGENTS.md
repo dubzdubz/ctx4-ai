@@ -4,7 +4,7 @@ Next.js web app + MCP server for adding long-term context/memory to AI agents. B
 
 ## Quick Reference
 
-- **Stack**: TypeScript, Next.js 16 (App Router), pnpm, mcp-handler, Vercel Sandbox, Supabase Auth, Storybook
+- **Stack**: TypeScript, Next.js 16 (App Router), pnpm, mcp-handler, Vercel Sandbox, Supabase Auth, Drizzle ORM, GitHub App (Octokit), Storybook
 - **Dev server**: `pnpm dev` → Next.js at `localhost:3000`, MCP at `localhost:3000/mcp`
 - **Build**: `pnpm build && pnpm start`
 - **Lint**: `pnpm lint` (Biome) / `pnpm lint:fix`
@@ -17,25 +17,33 @@ Next.js web app + MCP server for adding long-term context/memory to AI agents. B
 ```
 ├── app/
 │   ├── [transport]/route.ts   # MCP handler (tools registration)
-│   ├── api/                   # API routes
+│   ├── api/
+│   │   ├── github/            # GitHub App endpoints (callback, repos, select-repo, disconnect)
+│   │   └── oauth/             # OAuth approval endpoint
 │   ├── auth/                  # OAuth endpoints
-│   ├── settings/              # User settings / profile page
+│   ├── settings/              # User settings / profile page (incl. GitHub integration)
 │   ├── layout.tsx             # Root layout
 │   └── page.tsx               # Home page
 ├── lib/
 │   ├── auth/                  # Auth utilities (verify-token)
 │   ├── content/               # Built-in guide content
-│   ├── sandbox/               # SandboxManager + scanner
+│   ├── db/                    # Drizzle ORM (schema, queries, client)
+│   ├── github/                # GitHub App client (Octokit, installation tokens)
+│   ├── sandbox/               # SandboxManager, SandboxManagerPool, scanner
 │   ├── supabase/              # Supabase client helpers
 │   ├── tools/                 # MCP tool implementations
 │   └── utils.ts               # Shared utilities
-├── components/                # React UI components
+├── components/
+│   ├── github/                # GitHub integration UI (repo manager)
+│   ├── auth/                  # Auth components
+│   └── ui/                    # Shadcn UI components
+├── drizzle/                   # Database migrations
 ├── scripts/                   # Build/dev scripts
 ├── docs/                      # Project documentation
 │   ├── architecture.md        # Architecture decisions
 │   ├── product.md             # Product overview
 │   └── style-guide.md         # Code style & linting
-└── AGENTS.md                  # This file (always in context)
+└── CLAUDE.md                  # This file (always in context)
 ```
 
 ## Architecture
@@ -45,13 +53,15 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 ```
 [Claude/ChatGPT] → MCP Protocol → [Next.js App with MCP Handler]
                                         ├── OAuth 2.0 (Supabase)
-                                        ├── User authorization (allowlist)
+                                        ├── Per-user isolation (userId from JWT)
                                         ├── ctx_instructions() → reads from sandbox
                                         └── ctx_bash() → executes in sandbox
                                               ↓
+                                         [SandboxManagerPool — per-user sandbox cache]
+                                              ↓
                                          [Vercel Sandbox (microVM)]
                                            ├── /vercel/sandbox (git working directory)
-                                           └── Seeded from user's GitHub repo
+                                           └── Seeded from user's GitHub repo (via GitHub App)
                                               ↓
                                          GitHub (source of truth)
 ```
@@ -59,7 +69,7 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 ### Key Design Decisions
 
 - **Next.js + mcp-handler**: Unified codebase for MCP server and web UI, Vercel-native deployment
-- **Vercel Sandbox** over Docker: True microVM isolation (Firecracker), stateless server, path to multi-user
+- **Vercel Sandbox** over Docker: True microVM isolation (Firecracker), stateless server, per-user sandboxes
 - **Tools over Resources**: MCP tools are model-controlled (LLM calls proactively), resources are app-driven. Primary discovery via `ctx_instructions()` tool.
 - **Git as source of truth**: Sandbox filesystem is ephemeral. Git clone on sandbox creation, git push after changes.
 - **Filesystem over Database**: LLMs understand filesystem operations natively (read, write, grep, ls)
@@ -75,14 +85,24 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 - OAuth 2.0 via Supabase with `withMcpAuth` wrapper from mcp-handler
 - Per-user data isolation (each user can only access their own GitHub repo/sandbox)
 - JWT verification via Supabase JWKS
+- GitHub App with OAuth-verified installation ownership (prevents installation hijacking)
 - Config via GitHub App credentials, `VERCEL_OIDC_TOKEN`, and Supabase env vars
 
-### SandboxManager (`lib/sandbox/manager.ts`)
-- Creates sandbox seeded from git repo on first tool call (lazy initialization)
-- Reuses existing sandbox via local expiry tracking
-- Extends sandbox timeout when near expiry, recreates if expired
-- Deduplicates concurrent `ensure()` and `extendTimeout()` calls
-- Handles git config, credentials, commit, and push inside sandbox
+### GitHub Integration (`lib/github/app.ts`)
+- GitHub App with per-installation tokens (1-hour validity, auto-cached by Octokit)
+- Commits appear as `ctx4-ai[bot]`
+- OAuth code exchange during callback verifies user owns the installation
+- Per-user config stored in `user_github_configs` table (Drizzle ORM + Supabase PostgreSQL)
+
+### Sandbox (`lib/sandbox/`)
+- **SandboxManagerPool** (`pool.ts`): In-memory `Map<userId, SandboxManager>` cache
+- **SandboxManager** (`manager.ts`): Per-user sandbox lifecycle
+  - Constructor accepts `userId` and config (installationId, repoUrl, defaultBranch)
+  - Creates sandbox seeded from user's GitHub repo on first tool call (lazy init)
+  - Uses `getInstallationToken()` for git auth (refreshes after 50 min)
+  - Reuses existing sandbox via local expiry tracking
+  - Extends sandbox timeout when near expiry, recreates if expired
+  - Deduplicates concurrent `ensure()` and `extendTimeout()` calls
 
 ### Sandbox Data Directory Convention
 ```
@@ -131,7 +151,7 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 # 1. Setup (one-time)
 vercel link           # Link to a Vercel project
 vercel env pull       # Pull auth token to .env.local
-cp .env.example .env  # Add GITHUB_REPO, GITHUB_TOKEN, and Supabase credentials
+cp .env.example .env  # Add DATABASE_URL, GitHub App credentials, and Supabase credentials
 
 # 2. Run
 pnpm dev              # Start Next.js dev server
