@@ -1,0 +1,99 @@
+import { z } from "zod/v3";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { checkUserAuthorization } from "@/lib/auth/check-user-auth";
+import { sandboxManager } from "@/lib/sandbox/manager";
+
+export function registerCtxBashTool(server: McpServer) {
+  server.registerTool(
+    "ctx_bash",
+    {
+      title: "Execute Bash Command",
+      description: `Execute a bash command in the memory sandbox.
+
+Available commands: ls, cat, grep, find, echo, mkdir, touch, rm, mv, cp, etc.
+
+Examples:
+- List files: ls -la
+- Read file: cat notes.md
+- Search: grep -r "TODO" .
+- Create file: echo "# My Notes" > notes.md
+- Create dir: mkdir projects
+
+Any changes are automatically committed and pushed to GitHub.`,
+      inputSchema: {
+        command: z.string().describe("The bash command to execute"),
+        comment: z
+          .string()
+          .optional()
+          .describe(
+            "Optional description for the git commit (if changes are made)",
+          ),
+      },
+    },
+    async ({ command, comment }, extra) => {
+      // Check user authorization
+      checkUserAuthorization(extra.authInfo);
+
+      try {
+        const startTime = Date.now();
+        const { stdout, stderr, exitCode } =
+          await sandboxManager.runCommand(command);
+
+        const endTime = Date.now();
+        console.log(
+          `[ctx_bash] command "${command}" executed in ${endTime - startTime}ms`,
+        );
+
+        const output = stdout || stderr || "(no output)";
+
+        if (exitCode !== 0 && stderr) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `${output}\n\n[Exit code: ${exitCode}]`,
+              },
+            ],
+          };
+        }
+
+        // Check for changes and sync to git
+        const commitMessage = await sandboxManager.gitSyncIfChanged(comment);
+        console.log(
+          `[ctx_bash] git sync completed in ${Date.now() - endTime}ms`,
+        );
+
+        if (commitMessage) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `${output}\n\n[Committed: ${commitMessage}]`,
+              },
+            ],
+          };
+        }
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: output,
+            },
+          ],
+        };
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : String(error);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${message}`,
+            },
+          ],
+        };
+      }
+    },
+  );
+}
