@@ -35,7 +35,7 @@ type HomePageProps = {
 
 export function HomePage({ isAuthenticated }: HomePageProps) {
   return (
-    <main className="min-h-screen bg-[oklch(0.99_0.002_260)]">
+    <main className="min-h-screen bg-[oklch(0.985_0.006_250)]">
       <div className="mx-auto max-w-5xl px-8 py-24 md:py-32">
         {/* Hero */}
         <section className="text-center">
