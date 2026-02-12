@@ -42,7 +42,8 @@ Next.js web app + MCP server for adding long-term context/memory to AI agents. B
 ├── docs/                      # Project documentation
 │   ├── architecture.md        # Architecture decisions
 │   ├── product.md             # Product overview
-│   └── style-guide.md         # Code style & linting
+│   ├── style-guide.md         # Code style & linting
+│   └── ui-guide.md            # UI components & design handling
 └── CLAUDE.md                  # This file (always in context)
 ```
 
@@ -140,6 +141,7 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 | Architecture details | `docs/architecture.md` |
 | Product overview | `docs/product.md` |
 | Code style & linting | `docs/style-guide.md` |
+| UI components & design | `docs/ui-guide.md` |
 | Usage instructions | `README.md` |
 
 ## Important Learnings

@@ -120,6 +120,7 @@ The project uses Biome for both formatting and linting. Some rules are relaxed i
 
 **Always prefer shadcn/ui components over building custom UI from scratch.**
 
+- See `docs/ui-guide.md` for full UI principles (shadcn-first, CLI installs, motion, Aceternity/lucide-animated)
 - Check the [shadcn/ui registry](https://ui.shadcn.com) before creating new components
 - Use `pnpm dlx shadcn@latest add [component]` to add components via CLI
 - Common components: `card`, `button`, `badge`, `separator`, `alert`, `dialog`, `sheet`, `select`, `input`, `field`
