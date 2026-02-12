@@ -25,6 +25,7 @@
     "lucide-react": "^0.563.0",
     "mcp-handler": "^1.0.7",
     "next": "16.1.6",
+    "octokit": "^5.0.5",
     "postgres": "^3.4.8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
