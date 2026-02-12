@@ -19,7 +19,7 @@ Next.js web app + MCP server for adding long-term context/memory to AI agents. B
 │   ├── [transport]/route.ts   # MCP handler (tools registration)
 │   ├── api/                   # API routes
 │   ├── auth/                  # OAuth endpoints
-│   ├── me/                    # User profile page
+│   ├── settings/              # User settings / profile page
 │   ├── layout.tsx             # Root layout
 │   └── page.tsx               # Home page
 ├── lib/

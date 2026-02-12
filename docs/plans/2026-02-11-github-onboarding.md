@@ -213,7 +213,7 @@ DATABASE_URL=postgres://...  # Supabase connection string for Drizzle
 - [ ] Update middleware for redirects
 
 ### Phase 5: Polish (~1 hour)
-- [ ] Add GitHub status to `/me` page
+- [ ] Add GitHub status to `/settings` page
 - [ ] Handle "Change Repo" / "Disconnect GitHub"
 - [ ] Remove legacy `GITHUB_REPO`/`GITHUB_TOKEN` env var usage
 

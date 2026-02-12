@@ -10,7 +10,7 @@ import { GithubRepoManager } from "@/components/github/github-repo-manager";
 import { getUserGithubConfig } from "@/lib/db/queries";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function MePage() {
+export default async function SettingsPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;

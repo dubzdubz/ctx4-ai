@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
   if (!installationId) {
     return NextResponse.redirect(
-      new URL("/me", url.origin),
+      new URL("/settings", url.origin),
     );
   }
 
@@ -52,15 +52,15 @@ export async function GET(request: Request) {
           defaultBranch: repo.default_branch ?? "main",
         });
 
-        return NextResponse.redirect(new URL("/me", url.origin));
+        return NextResponse.redirect(new URL("/settings", url.origin));
       }
     } catch (error) {
       console.error("[github/callback] Error listing repos:", error);
     }
   }
 
-  // Multiple repos or update action — redirect to /me for repo selection
-  const meUrl = new URL("/me", url.origin);
-  meUrl.searchParams.set("installation_id", installationId);
-  return NextResponse.redirect(meUrl);
+  // Multiple repos or update action — redirect to /settings for repo selection
+  const settingsUrl = new URL("/settings", url.origin);
+  settingsUrl.searchParams.set("installation_id", installationId);
+  return NextResponse.redirect(settingsUrl);
 }

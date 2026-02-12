@@ -135,7 +135,7 @@ npx @mcpjam/inspector@latest
 │   │   ├── error/page.tsx            # Auth error page
 │   │   ├── login/page.tsx            # Login page (magic link form)
 │   │   └── oauth/authorize/page.tsx  # OAuth consent screen
-│   ├── me/page.tsx                   # User profile (protected)
+│   ├── settings/page.tsx             # User settings / profile (protected)
 │   ├── layout.tsx                    # Root layout
 │   ├── page.tsx                      # Landing page
 │   └── globals.css                   # Tailwind v4 + Shadcn theme
