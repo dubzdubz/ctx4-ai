@@ -45,7 +45,7 @@ Any changes are automatically committed and pushed to GitHub.`,
 
         const endTime = Date.now();
         console.log(
-          `[ctx_bash] command "${command}" executed in ${endTime - startTime}ms`,
+          `[ctx_bash] command executed in ${endTime - startTime}ms`,
         );
 
         const output = stdout || stderr || "(no output)";
