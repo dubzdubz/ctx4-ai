@@ -1,7 +1,11 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "motion/react";
-import { Brain, BookOpen, Github, Wrench } from "lucide-react";
+import { BrainIcon } from "@/components/ui/brain";
+import { BookTextIcon } from "@/components/ui/book-text";
+import { GithubIcon } from "@/components/ui/github";
+import { WrenchIcon } from "@/components/ui/wrench";
 import { LinkButton } from "@/components/ui/link-button";
 import {
   Card,
@@ -13,17 +17,17 @@ import {
 
 const features = [
   {
-    icon: Brain,
+    icon: BrainIcon,
     title: "Personal Context",
     description: "Who you are, what you do, and how you prefer to work.",
   },
   {
-    icon: BookOpen,
+    icon: BookTextIcon,
     title: "Knowledge Base",
     description: "Processes, docs, and shared knowledge.",
   },
   {
-    icon: Wrench,
+    icon: WrenchIcon,
     title: "Skills",
     description: "Routines and capabilities extracted from past conversations.",
   },
@@ -33,7 +37,11 @@ type HomePageProps = {
   isAuthenticated: boolean;
 };
 
+type IconHandle = { startAnimation: () => void; stopAnimation: () => void };
+
 export function HomePage({ isAuthenticated }: HomePageProps) {
+  const iconRefs = useRef<(IconHandle | null)[]>([]);
+
   return (
     <main className="min-h-screen bg-[oklch(0.985_0.006_250)]">
       <div className="mx-auto max-w-5xl px-8 py-24 md:py-32">
@@ -85,11 +93,22 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
+                onMouseEnter={() => iconRefs.current[index]?.startAnimation()}
+                onMouseLeave={() => iconRefs.current[index]?.stopAnimation()}
               >
-                <Card size="sm" className="h-full">
+                <Card
+                  size="sm"
+                  className="h-full transition-colors duration-200 hover:bg-muted/5"
+                >
                   <CardHeader>
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                      <feature.icon className="size-4" aria-hidden />
+                    <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
+                      <feature.icon
+                        ref={(el) => {
+                          iconRefs.current[index] = el;
+                        }}
+                        size={16}
+                        aria-hidden
+                      />
                     </div>
                     <CardTitle>{feature.title}</CardTitle>
                   </CardHeader>
@@ -116,7 +135,7 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
             and edit anytime.
           </p>
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Github className="size-4 shrink-0" aria-hidden />
+            <GithubIcon size={16} className="shrink-0" aria-hidden />
             Your data lives in your GitHub repo. You stay in control.
           </p>
         </motion.div>
