@@ -56,13 +56,24 @@ pnpm install
 cp .env.example .env
 ```
 
-Fill in your Supabase credentials from [Supabase Dashboard → Settings → API](https://supabase.com/dashboard/project/_/settings/api):
+Fill in your credentials (see `.env.example` for the full list):
 
 ```
+# Supabase (from Dashboard → Settings → API)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Database (Supabase PostgreSQL connection string)
+DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+
+# GitHub App (from GitHub Developer Settings)
+NEXT_PUBLIC_GITHUB_APP_SLUG=your-app-slug
+GITHUB_APP_ID=123456
+GITHUB_APP_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----"
+GITHUB_APP_CLIENT_ID=Iv1.xxxxxxxxxx
+GITHUB_APP_CLIENT_SECRET=xxxxxxxxxxxx
 ```
 
 ### 3. Configure Supabase Auth
@@ -117,11 +128,13 @@ Use the [MCP Inspector](https://github.com/MCPJam/inspector) to test and debug y
 npx @mcpjam/inspector@latest
 ```
 
-### Available Example Tools
+### Available Tools
 
 | Tool | Description |
 |------|-------------|
-| `roll_dice` | Roll a dice with a specified number of sides (authenticated) |
+| `ctx_instructions` | Returns full context bootstrap (guide + instructions + context + resource/skill indexes) |
+| `ctx_bash` | Sandboxed bash in `/vercel/sandbox` with auto git commit and push |
+| `roll_dice` | Roll a dice with a specified number of sides (demo tool) |
 
 ## Project Structure
 
@@ -129,23 +142,32 @@ npx @mcpjam/inspector@latest
 ├── app/
 │   ├── [transport]/route.ts          # MCP handler (mcp, sse, streamable-http)
 │   ├── .well-known/                  # OAuth protected resource metadata
-│   ├── api/oauth/approve/route.ts    # OAuth consent approval endpoint
+│   ├── api/
+│   │   ├── github/                   # GitHub App endpoints (callback, repos, select-repo, disconnect)
+│   │   └── oauth/approve/route.ts    # OAuth consent approval endpoint
 │   ├── auth/
 │   │   ├── confirm/page.tsx          # Magic link confirmation
 │   │   ├── error/page.tsx            # Auth error page
 │   │   ├── login/page.tsx            # Login page (magic link form)
 │   │   └── oauth/authorize/page.tsx  # OAuth consent screen
-│   ├── me/page.tsx                   # User profile (protected)
+│   ├── settings/page.tsx             # User settings / profile + GitHub integration
 │   ├── layout.tsx                    # Root layout
 │   ├── page.tsx                      # Landing page
 │   └── globals.css                   # Tailwind v4 + Shadcn theme
 ├── components/
 │   ├── auth/                         # Auth components (login, logout, consent)
+│   ├── github/                       # GitHub integration UI (repo manager)
 │   └── ui/                           # Shadcn UI components
 ├── lib/
 │   ├── auth/verify-token.ts          # JWT verification for MCP auth
-│   └── supabase/                     # Supabase client/server/middleware
+│   ├── db/                           # Drizzle ORM (schema, queries, client)
+│   ├── github/app.ts                 # GitHub App client (Octokit, installation tokens)
+│   ├── sandbox/                      # SandboxManager, SandboxManagerPool, scanner
+│   ├── supabase/                     # Supabase client/server/middleware
+│   └── tools/                        # MCP tool implementations
+├── drizzle/                          # Database migrations
 ├── proxy.ts                          # Next.js middleware (session + route protection)
+├── drizzle.config.ts                 # Drizzle ORM configuration
 ├── biome.jsonc                       # Biome linter/formatter config
 └── .env.example                      # Environment variables template
 ```
@@ -191,7 +213,7 @@ Available scopes: `openid`, `email`, `profile`, `mcp:tools`, `mcp:resources`.
 
 ### Adjusting Route Protection
 
-Edit `lib/supabase/middleware.ts` to change which paths are public or protected. MCP transport routes (`/mcp`, `/sse`, `/streamable-http`) are automatically bypassed when a Bearer token is present.
+Edit `proxy.ts` and `lib/supabase/middleware.ts` to change which paths are public or protected. MCP transport routes (`/mcp`, `/sse`, `/streamable-http`) are automatically bypassed when a Bearer token is present.
 
 ## Tech Stack
 
@@ -201,6 +223,8 @@ Edit `lib/supabase/middleware.ts` to change which paths are public or protected.
 | [mcp-handler](https://github.com/vercel/mcp-handler) | ^1.0.7 | MCP server adapter |
 | [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) | 1.25.2 | MCP SDK |
 | [Supabase](https://supabase.com/) | SSR + JS | Auth & database |
+| [Drizzle ORM](https://orm.drizzle.team/) | ^0.45 | Database ORM |
+| [Octokit](https://github.com/octokit/octokit.js) | ^5.0 | GitHub App integration |
 | [Shadcn UI](https://ui.shadcn.com/) | base-vega | UI components |
 | [Tailwind CSS](https://tailwindcss.com/) | v4 | Styling |
 | [Biome](https://biomejs.dev/) | ^2.3 | Linting & formatting |

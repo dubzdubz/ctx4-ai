@@ -1,9 +1,11 @@
 import { LogoutButton } from "@/components/auth/logout-button";
+import { GithubRepoManager } from "@/components/github/github-repo-manager";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getUserGithubConfig } from "@/lib/db/queries";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function MePage() {
+export default async function SettingsPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
@@ -12,6 +14,13 @@ export default async function MePage() {
   if (!claims) {
     return null;
   }
+
+  const githubConfig = await getUserGithubConfig(claims.sub as string);
+
+  const appSlug = process.env.NEXT_PUBLIC_GITHUB_APP_SLUG;
+  const installUrl = appSlug
+    ? `https://github.com/apps/${appSlug}/installations/new`
+    : null;
 
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
@@ -41,6 +50,20 @@ export default async function MePage() {
             </div>
           </CardContent>
         </Card>
+
+        <GithubRepoManager
+          config={
+            githubConfig?.repoFullName
+              ? {
+                  repoFullName: githubConfig.repoFullName,
+                  githubUsername: githubConfig.githubUsername,
+                  defaultBranch: githubConfig.defaultBranch ?? "main",
+                  installationId: githubConfig.installationId,
+                }
+              : null
+          }
+          installUrl={installUrl}
+        />
 
         <div className="flex justify-end">
           <LogoutButton />

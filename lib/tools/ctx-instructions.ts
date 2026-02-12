@@ -1,7 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { checkUserAuthorization } from "@/lib/auth/check-user-auth";
 import { GUIDE_CONTENT } from "@/lib/content/guide";
-import { sandboxManager } from "@/lib/sandbox/manager";
+import { sandboxPool } from "@/lib/sandbox/pool";
 import {
   readResourceContent,
   scanContextResources,
@@ -17,18 +16,24 @@ export function registerCtxInstructionsTool(server: McpServer) {
       inputSchema: {},
     },
     async (_params, extra) => {
-      // Check user authorization
-      checkUserAuthorization(extra.authInfo);
+      const userId = extra.authInfo?.extra?.userId as string | undefined;
+      if (!userId) {
+        return {
+          content: [{ type: "text", text: "Error: Unable to identify user." }],
+        };
+      }
+
+      const manager = await sandboxPool.getForUser(userId);
 
       // Ensure sandbox is ready before running parallel operations
-      await sandboxManager.ensure();
+      await manager.ensure();
 
       const [instructions, contextContent, resources, skills] =
         await Promise.all([
-          readResourceContent("instructions"),
-          readResourceContent("context"),
-          scanContextResources(),
-          scanSkills(),
+          readResourceContent(manager, "instructions"),
+          readResourceContent(manager, "context"),
+          scanContextResources(manager),
+          scanSkills(manager),
         ]);
 
       const section = (title: string, body: string) =>

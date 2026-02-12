@@ -81,7 +81,6 @@ Editing and curation can come later.
 - Custom web UI (use GitHub for MVP)
 - Advanced conflict resolution
 - Manual memory curation/editing
-- Self-serve signup (manual onboarding initially)
 - Collaborative/shared memories
 
 ## Success Metrics
