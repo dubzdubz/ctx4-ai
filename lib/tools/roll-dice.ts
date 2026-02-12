@@ -1,5 +1,5 @@
-import { z } from "zod/v3";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod/v3";
 
 export function registerRollDiceTool(server: McpServer) {
   server.registerTool(

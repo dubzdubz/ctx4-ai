@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { registerRollDiceTool } from "./roll-dice";
 import { registerCtxBashTool } from "./ctx-bash";
 import { registerCtxInstructionsTool } from "./ctx-instructions";
+import { registerRollDiceTool } from "./roll-dice";
 
 export function registerAllTools(server: McpServer) {
   registerRollDiceTool(server);
@@ -9,4 +9,8 @@ export function registerAllTools(server: McpServer) {
   registerCtxInstructionsTool(server);
 }
 
-export { registerRollDiceTool, registerCtxBashTool, registerCtxInstructionsTool };
+export {
+  registerRollDiceTool,
+  registerCtxBashTool,
+  registerCtxInstructionsTool,
+};

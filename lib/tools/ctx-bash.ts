@@ -1,5 +1,5 @@
-import { z } from "zod/v3";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod/v3";
 import { checkUserAuthorization } from "@/lib/auth/check-user-auth";
 import { sandboxManager } from "@/lib/sandbox/manager";
 
@@ -83,8 +83,7 @@ Any changes are automatically committed and pushed to GitHub.`,
           ],
         };
       } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : String(error);
+        const message = error instanceof Error ? error.message : String(error);
         return {
           content: [
             {
