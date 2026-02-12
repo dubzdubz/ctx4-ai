@@ -1,12 +1,9 @@
 "use client";
 
-import { useRef } from "react";
 import { motion } from "motion/react";
-import { BrainIcon } from "@/components/ui/brain";
+import { useRef } from "react";
 import { BookTextIcon } from "@/components/ui/book-text";
-import { GithubIcon } from "@/components/ui/github";
-import { WrenchIcon } from "@/components/ui/wrench";
-import { LinkButton } from "@/components/ui/link-button";
+import { BrainIcon } from "@/components/ui/brain";
 import {
   Card,
   CardContent,
@@ -14,6 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GithubIcon } from "@/components/ui/github";
+import { LinkButton } from "@/components/ui/link-button";
+import { WrenchIcon } from "@/components/ui/wrench";
 
 const features = [
   {
