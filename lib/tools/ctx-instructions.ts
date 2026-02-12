@@ -1,5 +1,4 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { checkUserAuthorization } from "@/lib/auth/check-user-auth";
 import { GUIDE_CONTENT } from "@/lib/content/guide";
 import { sandboxPool } from "@/lib/sandbox/pool";
 import {
@@ -17,9 +16,6 @@ export function registerCtxInstructionsTool(server: McpServer) {
       inputSchema: {},
     },
     async (_params, extra) => {
-      // Check user authorization
-      checkUserAuthorization(extra.authInfo);
-
       const userId = extra.authInfo?.extra?.userId as string | undefined;
       if (!userId) {
         return {

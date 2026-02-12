@@ -111,22 +111,16 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 - Supports both ES256 (recommended) and HS256 (legacy) JWT tokens
 - OAuth works seamlessly with existing Next.js auth (cookie-based for web, bearer for MCP)
 
-### User Authorization Allowlist
+### User Authorization Model
 
-**Decision:** Server-side user ID allowlist for access control.
+**Decision:** Per-user data isolation via authenticated user ID.
 
-**Rationale:**
-- Defense in depth — additional layer beyond Supabase authentication
-- Prevents unauthorized access even if signup is accidentally enabled
-- Simple configuration via `ALLOWED_USER_IDS` environment variable
-- Supports both single-user and small team use cases
-
-**Implementation:**
-- `checkUserAuthorization()` function in `lib/auth/check-user-auth.ts`
-- Validates user ID against allowlist
-- Called at the start of every tool execution
-- Comma-separated list of Supabase user IDs
-- Optional — if unset, any authenticated user can access (not recommended for production)
+**How it works:**
+- Supabase OAuth issues a JWT with `sub` claim = user ID
+- Every MCP tool call extracts the user ID from the verified JWT
+- `sandboxPool.getForUser(userId)` loads only that user's GitHub config from the database
+- Each user can only access their own repo/sandbox — no cross-user access is possible
+- User signup is controlled via Supabase invites (no open registration)
 
 ### GitHub App Installation Security
 
@@ -184,7 +178,6 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 - `app/[transport]/route.ts` - MCP handler with tool registrations
 - `lib/sandbox/manager.ts` - Sandbox lifecycle management
 - `lib/sandbox/scanner.ts` - Resource and skill discovery
-- `lib/auth/check-user-auth.ts` - User authorization
 - `lib/auth/verify-token.ts` - JWT token verification
 
 ### Sandbox Manager (`lib/sandbox/manager.ts`)

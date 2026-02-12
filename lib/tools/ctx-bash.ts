@@ -1,6 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod/v3";
-import { checkUserAuthorization } from "@/lib/auth/check-user-auth";
 import { sandboxPool } from "@/lib/sandbox/pool";
 
 export function registerCtxBashTool(server: McpServer) {
@@ -31,9 +30,6 @@ Any changes are automatically committed and pushed to GitHub.`,
       },
     },
     async ({ command, comment }, extra) => {
-      // Check user authorization
-      checkUserAuthorization(extra.authInfo);
-
       const userId = extra.authInfo?.extra?.userId as string | undefined;
       if (!userId) {
         return {

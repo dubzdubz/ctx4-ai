@@ -23,7 +23,7 @@ Next.js web app + MCP server for adding long-term context/memory to AI agents. B
 │   ├── layout.tsx             # Root layout
 │   └── page.tsx               # Home page
 ├── lib/
-│   ├── auth/                  # Auth utilities (verify-token, check-user-auth)
+│   ├── auth/                  # Auth utilities (verify-token)
 │   ├── content/               # Built-in guide content
 │   ├── sandbox/               # SandboxManager + scanner
 │   ├── supabase/              # Supabase client helpers
@@ -73,9 +73,9 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 
 ### Auth
 - OAuth 2.0 via Supabase with `withMcpAuth` wrapper from mcp-handler
-- User authorization via `ALLOWED_USER_IDS` allowlist
+- Per-user data isolation (each user can only access their own GitHub repo/sandbox)
 - JWT verification via Supabase JWKS
-- Config via `GITHUB_REPO`, `GITHUB_TOKEN`, `VERCEL_OIDC_TOKEN`, and Supabase env vars
+- Config via GitHub App credentials, `VERCEL_OIDC_TOKEN`, and Supabase env vars
 
 ### SandboxManager (`lib/sandbox/manager.ts`)
 - Creates sandbox seeded from git repo on first tool call (lazy initialization)
