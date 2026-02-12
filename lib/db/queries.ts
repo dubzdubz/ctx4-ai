@@ -20,21 +20,28 @@ export async function getUserGithubConfig(
 export async function upsertUserGithubConfig(
   config: NewUserGithubConfig,
 ): Promise<UserGithubConfig> {
+  // Build the update set dynamically — only include repo fields when provided,
+  // so a partial upsert (just installationId) doesn't null out existing repo data.
+  const updateSet: Record<string, unknown> = {
+    installationId: config.installationId,
+    isActive: config.isActive ?? true,
+    updatedAt: new Date(),
+  };
+  if (config.githubUsername !== undefined)
+    updateSet.githubUsername = config.githubUsername;
+  if (config.repoFullName !== undefined)
+    updateSet.repoFullName = config.repoFullName;
+  if (config.repoId !== undefined) updateSet.repoId = config.repoId;
+  if (config.repoUrl !== undefined) updateSet.repoUrl = config.repoUrl;
+  if (config.defaultBranch !== undefined)
+    updateSet.defaultBranch = config.defaultBranch;
+
   const [result] = await db
     .insert(userGithubConfigs)
     .values(config)
     .onConflictDoUpdate({
       target: userGithubConfigs.userId,
-      set: {
-        installationId: config.installationId,
-        githubUsername: config.githubUsername,
-        repoFullName: config.repoFullName,
-        repoId: config.repoId,
-        repoUrl: config.repoUrl,
-        defaultBranch: config.defaultBranch,
-        isActive: config.isActive ?? true,
-        updatedAt: new Date(),
-      },
+      set: updateSet,
     })
     .returning();
   return result;

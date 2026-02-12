@@ -23,9 +23,7 @@ export function registerCtxInstructionsTool(server: McpServer) {
       const userId = extra.authInfo?.extra?.userId as string | undefined;
       if (!userId) {
         return {
-          content: [
-            { type: "text", text: "Error: Unable to identify user." },
-          ],
+          content: [{ type: "text", text: "Error: Unable to identify user." }],
         };
       }
 

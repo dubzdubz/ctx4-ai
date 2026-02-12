@@ -128,6 +128,27 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 - Comma-separated list of Supabase user IDs
 - Optional — if unset, any authenticated user can access (not recommended for production)
 
+### GitHub App Installation Security
+
+**Decision:** Verify installation ownership via OAuth code exchange during GitHub App callback.
+
+**Threat model:** GitHub App callback URLs receive `installation_id` as a query parameter. GitHub warns: "Bad actors can hit this URL with a spoofed installation_id." Without verification, an attacker could link another user's GitHub installation to their own account and gain read/write access to the victim's repository via the sandbox.
+
+**Implementation:**
+- GitHub App has "Request user authorization (OAuth) during installation" enabled
+- Callback receives both `installation_id` and `code` (OAuth authorization code)
+- Server exchanges `code` for a user access token via `POST /login/oauth/access_token`
+- Server calls `GET /user/installations` with that token to verify the user owns the installation
+- Only after verification: installation_id is saved to DB (repo fields nullable until user picks one)
+- `/api/github/repos` reads installation_id from DB config — never from query params
+- `/api/github/select-repo` verifies the submitted `installationId` matches the user's DB config
+
+**Key files:**
+- `lib/github/app.ts` — `exchangeCodeForUserToken()`, `verifyUserOwnsInstallation()`
+- `app/api/github/callback/route.ts` — OAuth verification in callback
+- `app/api/github/repos/route.ts` — installation_id from trusted sources only
+- `app/api/github/select-repo/route.ts` — verifies installation before saving
+
 ### Security Layers
 
 1. **Authentication (Supabase):** Who are you?
@@ -139,6 +160,11 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
    - Server validates user ID against allowlist
    - Only authorized users can call MCP tools
    - Unauthorized users receive clear error message
+
+3. **Installation ownership (GitHub OAuth):** Is this your repo?
+   - GitHub OAuth code proves user identity during app installation
+   - `GET /user/installations` verifies the installation belongs to the user
+   - Prevents installation hijacking via spoofed callback URLs
 
 ## System Components
 
@@ -232,22 +258,16 @@ server.registerTool(
   - GitHub PAT (repository access)
 - **Deployment:** Vercel (or any Next.js host)
 
-## Multi-User Support (Future)
+## Multi-User Support
 
-### Current State (Single-User / Small Team)
+### Current State
 
 - OAuth authentication with Supabase ✅
 - User authorization via allowlist ✅
-- All users share the same GitHub repository
-- Single sandbox instance per server
-
-### Planned: Per-User Repositories
-
-Each user would get:
-- Isolated Vercel Sandbox instance (keyed by user ID)
-- Dedicated git repository (stored in database)
-- User-specific GitHub credentials
-- SandboxManager routes commands by user ID
+- Per-user GitHub App installations with ownership verification ✅
+- Per-user sandbox instances keyed by user ID ✅
+- GitHub OAuth code exchange prevents installation hijacking ✅
+- Installation ID never exposed as client-controllable parameter ✅
 
 ## Deferred Features
 

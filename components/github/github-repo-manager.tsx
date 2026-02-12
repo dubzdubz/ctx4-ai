@@ -42,24 +42,21 @@ export function GithubRepoManager({
 }: GithubRepoManagerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const installationIdFromUrl = searchParams.get("installation_id");
+  const selectRepoFromUrl = searchParams.get("select_repo") === "true";
 
   const [repos, setRepos] = useState<Repository[]>([]);
+  const [installationId, setInstallationId] = useState<number | null>(null);
   const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showRepoSelection, setShowRepoSelection] = useState(
-    !!installationIdFromUrl,
-  );
+  const [showRepoSelection, setShowRepoSelection] = useState(selectRepoFromUrl);
 
-  // Use installation_id from URL (just came from GitHub) or from config (selecting from existing repos)
-  const installationId = installationIdFromUrl ??
-    (showRepoSelection && config ? String(config.installationId) : null);
+  const shouldFetchRepos = showRepoSelection;
 
   useEffect(() => {
-    if (!installationId || !showRepoSelection) {
+    if (!shouldFetchRepos) {
       return;
     }
 
@@ -68,15 +65,14 @@ export function GithubRepoManager({
       setError(null);
 
       try {
-        const res = await fetch(
-          `/api/github/repos?installation_id=${installationId}`,
-        );
+        const res = await fetch("/api/github/repos");
         if (!res.ok) {
           const data = await res.json();
           throw new Error(data.error || "Failed to load repositories");
         }
         const data = await res.json();
         setRepos(data.repositories);
+        setInstallationId(data.installationId);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to load repositories",
@@ -87,7 +83,7 @@ export function GithubRepoManager({
     }
 
     fetchRepos();
-  }, [installationId, showRepoSelection]);
+  }, [shouldFetchRepos]);
 
   const handleSelectRepo = async () => {
     if (!selectedRepo || !installationId) return;
@@ -100,7 +96,7 @@ export function GithubRepoManager({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          installationId: Number(installationId),
+          installationId,
           repoId: selectedRepo.id,
           repoFullName: selectedRepo.fullName,
           repoUrl: selectedRepo.cloneUrl,
@@ -114,10 +110,10 @@ export function GithubRepoManager({
         throw new Error(data.error || "Failed to save repository");
       }
 
-      // Remove the installation_id query param if present and refresh
-      if (installationIdFromUrl) {
+      // Remove query params and refresh
+      if (selectRepoFromUrl) {
         const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("installation_id");
+        newUrl.searchParams.delete("select_repo");
         window.history.replaceState({}, "", newUrl.toString());
       }
 
@@ -279,9 +275,7 @@ export function GithubRepoManager({
           <>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Repository</span>
-              <span className="text-sm font-medium">
-                {config.repoFullName}
-              </span>
+              <span className="text-sm font-medium">{config.repoFullName}</span>
             </div>
             {config.githubUsername && (
               <div className="flex items-center justify-between">

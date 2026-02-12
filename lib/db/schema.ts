@@ -15,10 +15,10 @@ export const userGithubConfigs = pgTable("user_github_configs", {
   installationId: bigint("installation_id", { mode: "number" }).notNull(),
   githubUsername: text("github_username"),
 
-  // Selected repository
-  repoFullName: text("repo_full_name").notNull(),
-  repoId: bigint("repo_id", { mode: "number" }).notNull(),
-  repoUrl: text("repo_url").notNull(),
+  // Selected repository (nullable until user picks a repo during onboarding)
+  repoFullName: text("repo_full_name"),
+  repoId: bigint("repo_id", { mode: "number" }),
+  repoUrl: text("repo_url"),
   defaultBranch: text("default_branch").default("main"),
 
   // Metadata

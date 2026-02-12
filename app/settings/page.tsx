@@ -1,12 +1,7 @@
 import { LogoutButton } from "@/components/auth/logout-button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { GithubRepoManager } from "@/components/github/github-repo-manager";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getUserGithubConfig } from "@/lib/db/queries";
 import { createClient } from "@/lib/supabase/server";
 
@@ -58,7 +53,7 @@ export default async function SettingsPage() {
 
         <GithubRepoManager
           config={
-            githubConfig
+            githubConfig?.repoFullName
               ? {
                   repoFullName: githubConfig.repoFullName,
                   githubUsername: githubConfig.githubUsername,

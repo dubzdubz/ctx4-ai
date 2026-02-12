@@ -1,5 +1,5 @@
-import { type SandboxConfig, SandboxManager } from "./manager";
 import { getUserGithubConfig } from "@/lib/db/queries";
+import { type SandboxConfig, SandboxManager } from "./manager";
 
 class SandboxManagerPool {
   private managers = new Map<string, SandboxManager>();
@@ -7,7 +7,7 @@ class SandboxManagerPool {
   async getForUser(userId: string): Promise<SandboxManager> {
     if (!this.managers.has(userId)) {
       const config = await getUserGithubConfig(userId);
-      if (!config) {
+      if (!config || !config.repoUrl) {
         throw new Error(
           "No GitHub configuration found. Please complete onboarding first.",
         );

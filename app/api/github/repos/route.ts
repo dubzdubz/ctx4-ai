@@ -6,10 +6,12 @@ import { createClient } from "@/lib/supabase/server";
 /**
  * List repositories accessible to the user's GitHub App installation.
  *
- * Requires the user to be authenticated and have an installation_id
- * (either from their saved config or as a query parameter during onboarding).
+ * The installation_id is always resolved from the user's DB config
+ * (saved during the verified GitHub callback). We never accept
+ * installation_id as a query parameter to prevent enumeration of
+ * other users' installations.
  */
-export async function GET(request: Request) {
+export async function GET() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -19,20 +21,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Allow passing installation_id as query param (during onboarding before config is saved)
-  const url = new URL(request.url);
-  const installationIdParam = url.searchParams.get("installation_id");
-
-  let installationId: number | undefined;
-
-  if (installationIdParam) {
-    installationId = Number(installationIdParam);
-  } else {
-    const config = await getUserGithubConfig(user.id);
-    installationId = config?.installationId;
-  }
-
-  if (!installationId) {
+  const config = await getUserGithubConfig(user.id);
+  if (!config?.installationId) {
     return NextResponse.json(
       { error: "No GitHub installation found. Please connect GitHub first." },
       { status: 404 },
@@ -40,9 +30,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    const repos = await listAccessibleRepos(installationId);
+    const repos = await listAccessibleRepos(config.installationId);
 
     return NextResponse.json({
+      installationId: config.installationId,
       repositories: repos.map((repo) => ({
         id: repo.id,
         fullName: repo.full_name,

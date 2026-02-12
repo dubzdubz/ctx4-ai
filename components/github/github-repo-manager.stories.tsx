@@ -58,6 +58,7 @@ function createFetchMock(behavior: "repos" | "empty" | "error" | "loading") {
       }
       return new Response(
         JSON.stringify({
+          installationId: 12345,
           repositories: behavior === "empty" ? [] : mockRepos,
         }),
         { headers: { "Content-Type": "application/json" } },
@@ -128,7 +129,7 @@ export const RepoSelection: Story = {
     nextjs: {
       navigation: {
         pathname: "/settings",
-        query: { installation_id: "12345" },
+        query: { select_repo: "true" },
       },
     },
   },
@@ -144,7 +145,7 @@ export const RepoSelectionEmpty: Story = {
     nextjs: {
       navigation: {
         pathname: "/settings",
-        query: { installation_id: "12345" },
+        query: { select_repo: "true" },
       },
     },
   },
@@ -160,7 +161,7 @@ export const RepoSelectionLoading: Story = {
     nextjs: {
       navigation: {
         pathname: "/settings",
-        query: { installation_id: "12345" },
+        query: { select_repo: "true" },
       },
     },
   },
@@ -176,7 +177,7 @@ export const RepoSelectionError: Story = {
     nextjs: {
       navigation: {
         pathname: "/settings",
-        query: { installation_id: "12345" },
+        query: { select_repo: "true" },
       },
     },
   },

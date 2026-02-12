@@ -1,6 +1,6 @@
 import { Sandbox } from "@vercel/sandbox";
-import { DATA_DIR } from "@/lib/sandbox/constants";
 import { getInstallationToken } from "@/lib/github/app";
+import { DATA_DIR } from "@/lib/sandbox/constants";
 
 const SANDBOX_TIMEOUT = 60_000; // 1 minute
 const EXTEND_THRESHOLD = 20_000; // extend when < 20s remaining

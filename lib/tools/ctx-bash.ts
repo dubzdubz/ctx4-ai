@@ -37,9 +37,7 @@ Any changes are automatically committed and pushed to GitHub.`,
       const userId = extra.authInfo?.extra?.userId as string | undefined;
       if (!userId) {
         return {
-          content: [
-            { type: "text", text: "Error: Unable to identify user." },
-          ],
+          content: [{ type: "text", text: "Error: Unable to identify user." }],
         };
       }
 
@@ -47,8 +45,7 @@ Any changes are automatically committed and pushed to GitHub.`,
         const manager = await sandboxPool.getForUser(userId);
 
         const startTime = Date.now();
-        const { stdout, stderr, exitCode } =
-          await manager.runCommand(command);
+        const { stdout, stderr, exitCode } = await manager.runCommand(command);
 
         const endTime = Date.now();
         console.log(
