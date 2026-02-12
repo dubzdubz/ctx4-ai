@@ -25,7 +25,10 @@ export default async function SettingsPage() {
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-lg space-y-8">
-        <h1 className="text-2xl font-bold tracking-tight">Your account</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold tracking-tight">Your account</h1>
+          <LogoutButton />
+        </div>
 
         <section className="space-y-4">
           <h2 className="text-sm font-medium text-muted-foreground">Profile</h2>
@@ -62,10 +65,6 @@ export default async function SettingsPage() {
           }
           installUrl={installUrl}
         />
-
-        <div className="flex justify-end">
-          <LogoutButton />
-        </div>
       </div>
     </div>
   );

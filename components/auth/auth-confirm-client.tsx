@@ -48,7 +48,7 @@ export function AuthConfirmClient({ next }: { next: string }) {
     return (
       <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-sm space-y-4">
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Invalid or expired link
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -65,7 +65,9 @@ export function AuthConfirmClient({ next }: { next: string }) {
   return (
     <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-sm space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">Signing you in...</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Signing you in...
+        </h1>
         <p className="text-sm text-muted-foreground">Please wait a moment</p>
       </div>
     </div>
