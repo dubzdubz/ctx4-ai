@@ -4,6 +4,7 @@ import { getInstallationToken } from "@/lib/github/app";
 
 const SANDBOX_TIMEOUT = 60_000; // 1 minute
 const EXTEND_THRESHOLD = 20_000; // extend when < 20s remaining
+const TOKEN_REFRESH_THRESHOLD = 50 * 60 * 1000; // 50 minutes (GitHub tokens expire in 1 hour)
 
 export interface SandboxConfig {
   installationId: number;
@@ -24,6 +25,7 @@ export class SandboxManager {
   private ensurePromise: Promise<Sandbox> | null = null;
   private extendPromise: Promise<Sandbox> | null = null;
   private expiresAt = 0;
+  private tokenSetAt = 0;
 
   constructor(
     private readonly userId: string,
@@ -68,6 +70,7 @@ export class SandboxManager {
             this.sandbox = null;
             this.sandboxId = null;
             this.expiresAt = 0;
+            this.tokenSetAt = 0;
             return this._create();
           })
           .finally(() => {
@@ -82,6 +85,7 @@ export class SandboxManager {
       this.sandbox = null;
       this.sandboxId = null;
       this.expiresAt = 0;
+      this.tokenSetAt = 0;
     }
 
     // Deduplicate concurrent creation calls
@@ -142,10 +146,42 @@ export class SandboxManager {
     this.sandbox = sandbox;
     this.sandboxId = sandbox.sandboxId;
     this.expiresAt = Date.now() + SANDBOX_TIMEOUT;
+    this.tokenSetAt = Date.now();
     console.log(
       `[SandboxManager:${this.userId}] sandbox ready: ${this.sandboxId} in ${Date.now() - startTime}ms`,
     );
     return sandbox;
+  }
+
+  /**
+   * Refresh GitHub credentials in the sandbox if the token is older than 50 minutes.
+   * GitHub App installation tokens expire after 1 hour, so we refresh before that.
+   */
+  private async refreshGitCredentialsIfNeeded(): Promise<void> {
+    const tokenAge = Date.now() - this.tokenSetAt;
+
+    if (tokenAge < TOKEN_REFRESH_THRESHOLD) {
+      return; // Token still fresh
+    }
+
+    console.log(
+      `[SandboxManager:${this.userId}] refreshing GitHub token (age: ${Math.round(tokenAge / 60000)}min)`,
+    );
+
+    const token = await getInstallationToken(this.config.installationId);
+    const authedUrl = this.config.repoUrl.replace(
+      "https://",
+      `https://x-access-token:${token}@`,
+    );
+
+    // biome-ignore lint/style/noNonNullAssertion: method is only called after ensure()
+    await this.sandbox!.runCommand({
+      cmd: "git",
+      args: ["remote", "set-url", "origin", authedUrl],
+      cwd: DATA_DIR,
+    });
+
+    this.tokenSetAt = Date.now();
   }
 
   /**
@@ -192,6 +228,9 @@ export class SandboxManager {
 
     if (!status.trim()) return null;
 
+    // Refresh GitHub token if needed (only when we're actually pushing)
+    await this.refreshGitCredentialsIfNeeded();
+
     const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
     const message = comment || `auto-save ${timestamp}`;
 
@@ -218,6 +257,7 @@ export class SandboxManager {
       this.sandbox = null;
       this.sandboxId = null;
       this.expiresAt = 0;
+      this.tokenSetAt = 0;
     }
   }
 }
