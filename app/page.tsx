@@ -1,4 +1,3 @@
-import { LogoutButton } from "@/components/auth/logout-button";
 import { LinkButton } from "@/components/ui/link-button";
 import { createClient } from "@/lib/supabase/server";
 
@@ -14,15 +13,12 @@ export default async function Page() {
         Your portable context layer for Claude & ChatGPT
       </p>
       {user ? (
-        <>
-          <p className="text-sm text-muted-foreground">
-            Signed in as {user.email}
-          </p>
-          <LogoutButton />
-        </>
+        <LinkButton href="/settings" variant="default">
+          Settings
+        </LinkButton>
       ) : (
         <LinkButton href="/auth/login" variant="default">
-          Sign in
+          Get Started
         </LinkButton>
       )}
     </div>
