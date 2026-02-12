@@ -3,11 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LinkButton } from "@/components/ui/link-button";
+import { GithubRepoManager } from "@/components/github/github-repo-manager";
 import { getUserGithubConfig } from "@/lib/db/queries";
 import { createClient } from "@/lib/supabase/server";
 
@@ -57,54 +56,19 @@ export default async function MePage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">GitHub</CardTitle>
-            <CardDescription>
-              {githubConfig
-                ? "Your context repository is connected."
-                : "Connect a GitHub repository to use as your context store."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {githubConfig ? (
-              <>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Repository
-                  </span>
-                  <span className="text-sm font-medium">
-                    {githubConfig.repoFullName}
-                  </span>
-                </div>
-                {githubConfig.githubUsername && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      GitHub user
-                    </span>
-                    <span className="text-sm font-medium">
-                      {githubConfig.githubUsername}
-                    </span>
-                  </div>
-                )}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Branch</span>
-                  <code className="rounded bg-muted px-2 py-0.5 font-mono text-xs">
-                    {githubConfig.defaultBranch}
-                  </code>
-                </div>
-              </>
-            ) : installUrl ? (
-              <LinkButton href={installUrl} variant="outline">
-                Connect GitHub
-              </LinkButton>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                GitHub App not configured.
-              </p>
-            )}
-          </CardContent>
-        </Card>
+        <GithubRepoManager
+          config={
+            githubConfig
+              ? {
+                  repoFullName: githubConfig.repoFullName,
+                  githubUsername: githubConfig.githubUsername,
+                  defaultBranch: githubConfig.defaultBranch ?? "main",
+                  installationId: githubConfig.installationId,
+                }
+              : null
+          }
+          installUrl={installUrl}
+        />
 
         <div className="flex justify-end">
           <LogoutButton />

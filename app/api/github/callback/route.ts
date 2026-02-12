@@ -59,8 +59,8 @@ export async function GET(request: Request) {
     }
   }
 
-  // Multiple repos or update action — redirect to repo selection
-  const selectRepoUrl = new URL("/onboarding/select-repo", url.origin);
-  selectRepoUrl.searchParams.set("installation_id", installationId);
-  return NextResponse.redirect(selectRepoUrl);
+  // Multiple repos or update action — redirect to /me for repo selection
+  const meUrl = new URL("/me", url.origin);
+  meUrl.searchParams.set("installation_id", installationId);
+  return NextResponse.redirect(meUrl);
 }
