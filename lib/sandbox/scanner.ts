@@ -1,16 +1,17 @@
 import matter from "gray-matter";
 import { RESOURCES_DIR_NAME, SKILLS_DIR_NAME } from "@/lib/sandbox/constants";
-import { sandboxManager } from "@/lib/sandbox/manager";
+import type { SandboxManager } from "@/lib/sandbox/manager";
 
 /**
  * Reads a resource markdown file from the sandbox and returns its content (frontmatter stripped).
  * Returns empty string if file doesn't exist or can't be read.
  */
-export async function readResourceContent(name: string): Promise<string> {
+export async function readResourceContent(
+  manager: SandboxManager,
+  name: string,
+): Promise<string> {
   try {
-    const raw = await sandboxManager.readFile(
-      `${RESOURCES_DIR_NAME}/${name}.md`,
-    );
+    const raw = await manager.readFile(`${RESOURCES_DIR_NAME}/${name}.md`);
     if (!raw) return "";
     const { content } = matter(raw);
     return content.trim();
@@ -28,9 +29,11 @@ export interface IndexEntry {
  * Scans the resources directory in the sandbox for markdown files with frontmatter
  * and returns an array of resource definitions.
  */
-export async function scanContextResources(): Promise<IndexEntry[]> {
+export async function scanContextResources(
+  manager: SandboxManager,
+): Promise<IndexEntry[]> {
   try {
-    const { stdout, exitCode } = await sandboxManager.runCommand(
+    const { stdout, exitCode } = await manager.runCommand(
       `find ${RESOURCES_DIR_NAME} -maxdepth 1 -name '*.md' -type f 2>/dev/null`,
     );
 
@@ -41,7 +44,7 @@ export async function scanContextResources(): Promise<IndexEntry[]> {
 
     for (const filePath of files) {
       try {
-        const raw = await sandboxManager.readFile(filePath);
+        const raw = await manager.readFile(filePath);
         if (!raw) continue;
 
         const { data } = matter(raw);
@@ -74,9 +77,11 @@ export async function scanContextResources(): Promise<IndexEntry[]> {
  * Scans the skills directory in the sandbox for subdirectories containing SKILL.md files
  * and returns an array of index entries with name + description.
  */
-export async function scanSkills(): Promise<IndexEntry[]> {
+export async function scanSkills(
+  manager: SandboxManager,
+): Promise<IndexEntry[]> {
   try {
-    const { stdout, exitCode } = await sandboxManager.runCommand(
+    const { stdout, exitCode } = await manager.runCommand(
       `find ${SKILLS_DIR_NAME} -mindepth 2 -maxdepth 2 -name 'SKILL.md' -type f 2>/dev/null`,
     );
 
@@ -91,7 +96,7 @@ export async function scanSkills(): Promise<IndexEntry[]> {
       const dirName = parts[1];
 
       try {
-        const raw = await sandboxManager.readFile(filePath);
+        const raw = await manager.readFile(filePath);
         if (!raw) {
           skills.push({ name: dirName, description: "" });
           continue;

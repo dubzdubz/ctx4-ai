@@ -1,22 +1,34 @@
 import { Sandbox } from "@vercel/sandbox";
 import { DATA_DIR } from "@/lib/sandbox/constants";
+import { getInstallationToken } from "@/lib/github/app";
 
 const SANDBOX_TIMEOUT = 60_000; // 1 minute
 const EXTEND_THRESHOLD = 20_000; // extend when < 20s remaining
 
+export interface SandboxConfig {
+  installationId: number;
+  repoUrl: string;
+  defaultBranch: string;
+}
+
 /**
- * Manages a single Vercel Sandbox instance (single-user for now).
- * - Creates sandbox seeded from a git repo
+ * Manages a single Vercel Sandbox instance for a specific user.
+ * - Creates sandbox seeded from the user's git repo
  * - Reuses existing sandbox within a session
  * - Runs commands in the sandbox
  * - Handles git push after changes
  */
-class SandboxManager {
+export class SandboxManager {
   private sandbox: Sandbox | null = null;
   private sandboxId: string | null = null;
   private ensurePromise: Promise<Sandbox> | null = null;
   private extendPromise: Promise<Sandbox> | null = null;
   private expiresAt = 0;
+
+  constructor(
+    private readonly userId: string,
+    private readonly config: SandboxConfig,
+  ) {}
 
   /**
    * Get or create a sandbox, seeded from the user's git repo.
@@ -28,7 +40,9 @@ class SandboxManager {
       const remaining = this.expiresAt - Date.now();
 
       if (remaining > EXTEND_THRESHOLD) {
-        console.log(`[SandboxManager] ${remaining}ms remaining, reusing`);
+        console.log(
+          `[SandboxManager:${this.userId}] ${remaining}ms remaining, reusing`,
+        );
         return this.sandbox;
       }
 
@@ -38,7 +52,7 @@ class SandboxManager {
           return this.extendPromise;
         }
         console.log(
-          `[SandboxManager] ${remaining}ms remaining, extending timeout`,
+          `[SandboxManager:${this.userId}] ${remaining}ms remaining, extending timeout`,
         );
         this.extendPromise = this.sandbox
           .extendTimeout(SANDBOX_TIMEOUT)
@@ -48,7 +62,9 @@ class SandboxManager {
             return this.sandbox!;
           })
           .catch(() => {
-            console.log("[SandboxManager] extend failed, will recreate");
+            console.log(
+              `[SandboxManager:${this.userId}] extend failed, will recreate`,
+            );
             this.sandbox = null;
             this.sandboxId = null;
             this.expiresAt = 0;
@@ -59,7 +75,9 @@ class SandboxManager {
           });
         return this.extendPromise;
       }
-      console.log("[SandboxManager] sandbox expired, will recreate");
+      console.log(
+        `[SandboxManager:${this.userId}] sandbox expired, will recreate`,
+      );
 
       this.sandbox = null;
       this.sandboxId = null;
@@ -81,26 +99,19 @@ class SandboxManager {
   private async _create(): Promise<Sandbox> {
     const startTime = Date.now();
 
-    const repoUrl = process.env.GITHUB_REPO;
-    const token = process.env.GITHUB_TOKEN;
+    const { installationId, repoUrl } = this.config;
+    const token = await getInstallationToken(installationId);
 
-    if (!repoUrl) {
-      throw new Error("GITHUB_REPO environment variable is required");
-    }
-
-    console.log("[SandboxManager] creating sandbox...");
+    console.log(
+      `[SandboxManager:${this.userId}] creating sandbox for ${repoUrl}...`,
+    );
     const sandbox = await Sandbox.create({
-      source: token
-        ? {
-            type: "git",
-            url: repoUrl,
-            username: "x-access-token",
-            password: token,
-          }
-        : {
-            type: "git",
-            url: repoUrl,
-          },
+      source: {
+        type: "git",
+        url: repoUrl,
+        username: "x-access-token",
+        password: token,
+      },
       runtime: "node24",
       timeout: SANDBOX_TIMEOUT,
     });
@@ -108,33 +119,31 @@ class SandboxManager {
     // Configure git identity inside the sandbox
     await sandbox.runCommand({
       cmd: "git",
-      args: ["config", "user.email", "ctx-memory@local"],
+      args: ["config", "user.email", "ctx4-ai[bot]@users.noreply.github.com"],
       cwd: DATA_DIR,
     });
     await sandbox.runCommand({
       cmd: "git",
-      args: ["config", "user.name", "ctx-memory"],
+      args: ["config", "user.name", "ctx4-ai[bot]"],
       cwd: DATA_DIR,
     });
 
-    // Configure git credentials for push (token-based auth)
-    if (token) {
-      const authedUrl = repoUrl.replace(
-        "https://",
-        `https://x-access-token:${token}@`,
-      );
-      await sandbox.runCommand({
-        cmd: "git",
-        args: ["remote", "set-url", "origin", authedUrl],
-        cwd: DATA_DIR,
-      });
-    }
+    // Configure git credentials for push (installation token auth)
+    const authedUrl = repoUrl.replace(
+      "https://",
+      `https://x-access-token:${token}@`,
+    );
+    await sandbox.runCommand({
+      cmd: "git",
+      args: ["remote", "set-url", "origin", authedUrl],
+      cwd: DATA_DIR,
+    });
 
     this.sandbox = sandbox;
     this.sandboxId = sandbox.sandboxId;
     this.expiresAt = Date.now() + SANDBOX_TIMEOUT;
     console.log(
-      `[SandboxManager] sandbox ready: ${this.sandboxId} in ${Date.now() - startTime}ms`,
+      `[SandboxManager:${this.userId}] sandbox ready: ${this.sandboxId} in ${Date.now() - startTime}ms`,
     );
     return sandbox;
   }
@@ -199,7 +208,7 @@ class SandboxManager {
    * Stop and clean up the sandbox.
    */
   async stop(): Promise<void> {
-    console.log("[SandboxManager] stopping sandbox");
+    console.log(`[SandboxManager:${this.userId}] stopping sandbox`);
     if (this.sandbox) {
       try {
         await this.sandbox.stop();
@@ -212,5 +221,3 @@ class SandboxManager {
     }
   }
 }
-
-export const sandboxManager = new SandboxManager();

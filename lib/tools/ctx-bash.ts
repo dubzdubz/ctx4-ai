@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod/v3";
 import { checkUserAuthorization } from "@/lib/auth/check-user-auth";
-import { sandboxManager } from "@/lib/sandbox/manager";
+import { sandboxPool } from "@/lib/sandbox/pool";
 
 export function registerCtxBashTool(server: McpServer) {
   server.registerTool(
@@ -34,10 +34,21 @@ Any changes are automatically committed and pushed to GitHub.`,
       // Check user authorization
       checkUserAuthorization(extra.authInfo);
 
+      const userId = extra.authInfo?.extra?.userId as string | undefined;
+      if (!userId) {
+        return {
+          content: [
+            { type: "text", text: "Error: Unable to identify user." },
+          ],
+        };
+      }
+
       try {
+        const manager = await sandboxPool.getForUser(userId);
+
         const startTime = Date.now();
         const { stdout, stderr, exitCode } =
-          await sandboxManager.runCommand(command);
+          await manager.runCommand(command);
 
         const endTime = Date.now();
         console.log(
@@ -58,7 +69,7 @@ Any changes are automatically committed and pushed to GitHub.`,
         }
 
         // Check for changes and sync to git
-        const commitMessage = await sandboxManager.gitSyncIfChanged(comment);
+        const commitMessage = await manager.gitSyncIfChanged(comment);
         console.log(
           `[ctx_bash] git sync completed in ${Date.now() - endTime}ms`,
         );
