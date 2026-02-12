@@ -99,6 +99,10 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 2. **Save important learnings**: Document architectural decisions, gotchas, and patterns discovered during development.
 3. **Update this file**: Keep AGENTS.md current with high-level project info and pointers to detailed docs.
 
+### Component Development
+
+4. **Add Storybook stories for new components**: When creating or significantly modifying UI components in `components/`, add a `.stories.tsx` file alongside the component (e.g. `component.stories.tsx`). Cover key states (default, loading, error, empty, etc.) and mock API calls when needed.
+
 ### What to Document
 
 - Architecture decisions and rationale
