@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
   if (!installationId) {
     return NextResponse.redirect(
-      new URL("/onboarding?error=missing_installation_id", url.origin),
+      new URL("/me", url.origin),
     );
   }
 
