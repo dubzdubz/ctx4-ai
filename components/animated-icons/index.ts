@@ -1,0 +1,10 @@
+export { BookTextIcon } from "./book-text";
+export { BotMessageSquareIcon } from "./bot-message-square";
+export { BrainIcon } from "./brain";
+export { FolderGit2Icon } from "./folder-git-2";
+export { GithubIcon } from "./github";
+export { NfcIcon } from "./nfc";
+export { RefreshCWIcon } from "./refresh-cw";
+export { SparklesIcon } from "./sparkles";
+export { WrenchIcon } from "./wrench";
+export { ZapIcon } from "./zap";

@@ -94,7 +94,7 @@ const BrainIcon = forwardRef<BrainIconHandle, BrainIconProps>(
           controls.start("animate");
         }
       },
-      [controls, onMouseEnter]
+      [controls, onMouseEnter],
     );
 
     const handleMouseLeave = useCallback(
@@ -105,7 +105,7 @@ const BrainIcon = forwardRef<BrainIconHandle, BrainIconProps>(
           controls.start("normal");
         }
       },
-      [controls, onMouseLeave]
+      [controls, onMouseLeave],
     );
 
     return (
@@ -113,6 +113,7 @@ const BrainIcon = forwardRef<BrainIconHandle, BrainIconProps>(
         className={cn(className)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        role="img"
         {...props}
       >
         <motion.svg
@@ -184,7 +185,7 @@ const BrainIcon = forwardRef<BrainIconHandle, BrainIconProps>(
         </motion.svg>
       </div>
     );
-  }
+  },
 );
 
 BrainIcon.displayName = "BrainIcon";

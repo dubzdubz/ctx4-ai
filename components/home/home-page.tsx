@@ -1,10 +1,19 @@
 "use client";
 
-import { Code2Icon, DatabaseIcon, GiftIcon, ZapIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef } from "react";
-import { BookTextIcon } from "@/components/ui/book-text";
-import { BrainIcon } from "@/components/ui/brain";
+import {
+  BookTextIcon,
+  BotMessageSquareIcon,
+  BrainIcon,
+  FolderGit2Icon,
+  GithubIcon,
+  NfcIcon,
+  RefreshCWIcon,
+  SparklesIcon,
+  WrenchIcon,
+  ZapIcon,
+} from "@/components/animated-icons";
 import {
   Card,
   CardContent,
@@ -14,7 +23,6 @@ import {
 } from "@/components/ui/card";
 
 import { LinkButton } from "@/components/ui/link-button";
-import { WrenchIcon } from "@/components/ui/wrench";
 
 const features = [
   {
@@ -38,10 +46,10 @@ const features = [
 ] as const;
 
 const trustSignals = [
-  { icon: Code2Icon, label: "Open Source", sublabel: "Apache 2.0" },
-  { icon: GiftIcon, label: "Free", sublabel: "Cloud or self-hosted" },
+  { icon: GithubIcon, label: "Open Source", sublabel: "Apache 2.0" },
+  { icon: SparklesIcon, label: "Free", sublabel: "Cloud or self-hosted" },
   {
-    icon: DatabaseIcon,
+    icon: FolderGit2Icon,
     label: "Your Data",
     sublabel: "Lives in your GitHub repo",
   },
@@ -49,12 +57,18 @@ const trustSignals = [
 ] as const;
 
 const howItWorksSteps = [
-  { title: "Connect", description: "Add the MCP server to Claude or ChatGPT" },
   {
+    icon: NfcIcon,
+    title: "Connect",
+    description: "Add the MCP server to Claude or ChatGPT",
+  },
+  {
+    icon: RefreshCWIcon,
     title: "Context loads",
     description: "The AI reads your instructions, knowledge, and skills",
   },
   {
+    icon: BotMessageSquareIcon,
     title: "AI remembers",
     description: "New learnings are saved to your repo automatically",
   },
@@ -68,6 +82,7 @@ type IconHandle = { startAnimation: () => void; stopAnimation: () => void };
 
 export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
   const iconRefs = useRef<(IconHandle | null)[]>([]);
+  const howItWorksIconRefs = useRef<(IconHandle | null)[]>([]);
 
   return (
     <main className="min-h-svh bg-[oklch(0.985_0.006_250)]">
@@ -170,7 +185,7 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
                   key={signal.label}
                   className="flex items-center gap-2 text-muted-foreground"
                 >
-                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <Icon size={16} className="shrink-0" aria-hidden />
                   <span className="text-sm whitespace-nowrap">
                     {signal.label}
                     <span className="ml-1 text-muted-foreground/60">
@@ -193,7 +208,7 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
                     isLeft ? "justify-end pr-5" : "justify-start pl-5"
                   }`}
                 >
-                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <Icon size={16} className="shrink-0" aria-hidden />
                   <span className="text-sm whitespace-nowrap">
                     {signal.label}
                     <span className="ml-1 text-muted-foreground/60">
@@ -225,6 +240,12 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
+                onMouseEnter={() =>
+                  howItWorksIconRefs.current[index]?.startAnimation()
+                }
+                onMouseLeave={() =>
+                  howItWorksIconRefs.current[index]?.stopAnimation()
+                }
               >
                 <Card
                   size="sm"
@@ -232,7 +253,13 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
                 >
                   <CardHeader>
                     <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
-                      <span className="text-xs font-semibold">{index + 1}</span>
+                      <step.icon
+                        ref={(el) => {
+                          howItWorksIconRefs.current[index] = el;
+                        }}
+                        size={16}
+                        aria-hidden
+                      />
                     </div>
                     <CardTitle>{step.title}</CardTitle>
                   </CardHeader>

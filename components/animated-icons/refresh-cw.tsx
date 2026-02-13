@@ -6,23 +6,22 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-export interface BookTextIconHandle {
+export interface RefreshCWIconHandle {
   startAnimation: () => void;
   stopAnimation: () => void;
 }
 
-interface BookTextIconProps extends HTMLAttributes<HTMLDivElement> {
+interface RefreshCWIconProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
-const BookTextIcon = forwardRef<BookTextIconHandle, BookTextIconProps>(
+const RefreshCWIcon = forwardRef<RefreshCWIconHandle, RefreshCWIconProps>(
   ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
 
     useImperativeHandle(ref, () => {
       isControlledRef.current = true;
-
       return {
         startAnimation: () => controls.start("animate"),
         stopAnimation: () => controls.start("normal"),
@@ -31,24 +30,18 @@ const BookTextIcon = forwardRef<BookTextIconHandle, BookTextIconProps>(
 
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isControlledRef.current) {
-          onMouseEnter?.(e);
-        } else {
-          controls.start("animate");
-        }
+        if (isControlledRef.current) onMouseEnter?.(e);
+        else controls.start("animate");
       },
-      [controls, onMouseEnter]
+      [controls, onMouseEnter],
     );
 
     const handleMouseLeave = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isControlledRef.current) {
-          onMouseLeave?.(e);
-        } else {
-          controls.start("normal");
-        }
+        if (isControlledRef.current) onMouseLeave?.(e);
+        else controls.start("normal");
       },
-      [controls, onMouseLeave]
+      [controls, onMouseLeave],
     );
 
     return (
@@ -56,6 +49,7 @@ const BookTextIcon = forwardRef<BookTextIconHandle, BookTextIconProps>(
         className={cn(className)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        role="img"
         {...props}
       >
         <motion.svg
@@ -66,36 +60,25 @@ const BookTextIcon = forwardRef<BookTextIconHandle, BookTextIconProps>(
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="2"
+          transition={{ type: "spring", stiffness: 250, damping: 25 }}
           variants={{
-            animate: {
-              scale: [1, 1.04, 1],
-              rotate: [0, -8, 8, -8, 0],
-              y: [0, -2, 0],
-              transition: {
-                duration: 0.6,
-                ease: "easeInOut",
-                times: [0, 0.2, 0.5, 0.8, 1],
-              },
-            },
-            normal: {
-              scale: 1,
-              rotate: 0,
-              y: 0,
-            },
+            normal: { rotate: "0deg" },
+            animate: { rotate: "50deg" },
           }}
           viewBox="0 0 24 24"
           width={size}
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
-          <path d="M8 11h8" />
-          <path d="M8 7h6" />
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+          <path d="M21 3v5h-5" />
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+          <path d="M8 16H3v5" />
         </motion.svg>
       </div>
     );
-  }
+  },
 );
 
-BookTextIcon.displayName = "BookTextIcon";
+RefreshCWIcon.displayName = "RefreshCWIcon";
 
-export { BookTextIcon };
+export { RefreshCWIcon };
