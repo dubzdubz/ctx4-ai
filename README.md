@@ -27,7 +27,7 @@ MCP Client (e.g. Claude, Cursor)
   app/[transport]/route.ts  ← MCP handler (mcp-handler)
         │
         ├─ verifyToken()    ← validates Bearer JWT via Supabase JWKS
-        └─ server tools     ← your custom MCP tools (ctx_instructions, ctx_bash)
+        └─ server tools     ← MCP tools (ctx_instructions, ctx_bash)
 ```
 
 The MCP handler in `app/[transport]/route.ts` responds on `/mcp` (HTTP transport). Authentication is handled by `withMcpAuth`, which delegates to `lib/auth/verify-token.ts` for JWT validation.
@@ -104,7 +104,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ## Connecting an MCP Client
 
-Add the server to your MCP client (Cursor, VS Code, etc.):
+Add the server to your MCP client (Claude, Cursor, etc.):
 
 ```json
 {
