@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import { GlowingEffect } from "@/components/ui/glowing-effect";
 import { LinkButton } from "@/components/ui/link-button";
 
 const features = [
@@ -159,29 +159,36 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
                 transition={{ duration: 0.3, delay: index * 0.05 }}
                 onMouseEnter={() => iconRefs.current[index]?.startAnimation()}
                 onMouseLeave={() => iconRefs.current[index]?.stopAnimation()}
+                className="h-full"
               >
-                <Card
-                  size="sm"
-                  className="h-full transition-colors duration-200 hover:bg-muted/5"
-                >
-                  <CardHeader>
-                    <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
-                      <feature.icon
-                        ref={(el) => {
-                          iconRefs.current[index] = el;
-                        }}
-                        size={16}
-                        aria-hidden
-                      />
-                    </div>
-                    <CardTitle>{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="leading-relaxed">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                <div className="relative h-full rounded-xl border border-border p-0">
+                  <GlowingEffect
+                    spread={40}
+                    glow
+                    disabled={false}
+                    proximity={64}
+                    inactiveZone={0.01}
+                  />
+                  <Card size="sm" className="relative h-full ring-0">
+                    <CardHeader>
+                      <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
+                        <feature.icon
+                          ref={(el) => {
+                            iconRefs.current[index] = el;
+                          }}
+                          size={16}
+                          aria-hidden
+                        />
+                      </div>
+                      <CardTitle>{feature.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription className="leading-relaxed">
+                        {feature.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -265,29 +272,36 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
                 onMouseLeave={() =>
                   howItWorksIconRefs.current[index]?.stopAnimation()
                 }
+                className="h-full"
               >
-                <Card
-                  size="sm"
-                  className="h-full transition-colors duration-200 hover:bg-muted/5"
-                >
-                  <CardHeader>
-                    <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
-                      <step.icon
-                        ref={(el) => {
-                          howItWorksIconRefs.current[index] = el;
-                        }}
-                        size={16}
-                        aria-hidden
-                      />
-                    </div>
-                    <CardTitle>{step.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="leading-relaxed">
-                      {step.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                <div className="relative h-full rounded-xl border border-border">
+                  <GlowingEffect
+                    spread={40}
+                    glow
+                    disabled={false}
+                    proximity={64}
+                    inactiveZone={0.01}
+                  />
+                  <Card size="sm" className="relative h-full ring-0">
+                    <CardHeader>
+                      <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
+                        <step.icon
+                          ref={(el) => {
+                            howItWorksIconRefs.current[index] = el;
+                          }}
+                          size={16}
+                          aria-hidden
+                        />
+                      </div>
+                      <CardTitle>{step.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription className="leading-relaxed">
+                        {step.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </div>
               </motion.div>
             ))}
           </div>
