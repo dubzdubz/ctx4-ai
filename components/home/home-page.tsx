@@ -121,9 +121,11 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
             transition={{ duration: 0.4, delay: 0.1 }}
             className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg"
           >
-            Portable context and long-term memory for Claude & ChatGPT. Open
-            source. Works via MCP. Your data lives in your GitHub repo — you own
-            it.
+            Portable context and long-term memory for Claude & ChatGPT.
+            <br />
+            Works via MCP. Your data lives in your GitHub repo — you own it.
+            <br />
+            Free and open source.
           </motion.p>
 
           <motion.div
