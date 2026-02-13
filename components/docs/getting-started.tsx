@@ -83,6 +83,42 @@ function CodeBlock({
   );
 }
 
+const SYSTEM_PROMPT_TEXT = `Use the ctx4 MCP to manage my long-term context and memory. Always call ctx_instructions first before using ctx_bash to understand how to interact with my context. Use it to store preferences, learnings, and anything that should persist across conversations.`;
+
+function SystemPromptTextarea() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(SYSTEM_PROMPT_TEXT);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative">
+      <textarea
+        readOnly
+        value={SYSTEM_PROMPT_TEXT}
+        className="w-full rounded-lg border bg-muted p-3 text-sm leading-relaxed resize-none font-mono"
+        rows={4}
+      />
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleCopy}
+        className="absolute right-2 top-2 size-8"
+        aria-label="Copy to clipboard"
+      >
+        {copied ? (
+          <Check className="size-4 text-green-600 dark:text-green-500" />
+        ) : (
+          <Copy className="size-4" />
+        )}
+      </Button>
+    </div>
+  );
+}
+
 type GettingStartedProps = {
   isAuthenticated: boolean;
   hasLinkedRepo: boolean;
@@ -97,7 +133,7 @@ export function GettingStarted({
   return (
     <PageLayout
       title="Getting Started"
-      description="ctx4.ai gives your AI assistants persistent context via MCP. Your preferences, knowledge, and skills live in a GitHub repo and follow you across conversations in Claude, ChatGPT, VS Code, and any MCP client."
+      description="ctx4.ai gives your AI assistants persistent context via MCP. Your preferences, knowledge, and skills live in a GitHub repo and follow you across conversations in Claude, ChatGPT, Cursor, and any MCP client."
       maxWidth="md"
     >
       {/* Steps */}
@@ -362,19 +398,34 @@ export function GettingStarted({
             <StepNumber n={5} />
             <h2 className="text-xl font-semibold">Start using it</h2>
           </div>
-          <div className="pl-10 space-y-3 text-sm text-muted-foreground leading-relaxed">
-            <p>
-              Once connected, your AI client will authenticate via OAuth and
-              gain access to your context repo. Run the <Code>/onboarding</Code>{" "}
-              prompt to get set up:
-            </p>
-            <CodeBlock>Use the /onboarding prompt</CodeBlock>
-            <p>
-              The onboarding flow will scaffold your repo if needed, ask about
-              your preferences and workflow, and save everything to the right
-              files. After that, your AI will have full context about you in
-              every conversation.
-            </p>
+          <div className="pl-10 space-y-4 text-sm text-muted-foreground leading-relaxed">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                Run onboarding (optional but recommended)
+              </p>
+              <p>
+                The onboarding prompt will set up your context repo and ask a
+                few questions about your preferences:
+              </p>
+              <CodeBlock>/ctx4:onboarding</CodeBlock>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                Add system prompt (optional but recommended)
+              </p>
+              <p>
+                For best results, add this to your client's custom instructions
+                or system prompt:
+              </p>
+              <SystemPromptTextarea />
+              <p className="text-xs">
+                <strong>Claude:</strong> Settings → General → Personal
+                Preferences
+                <br />
+                <strong>ChatGPT:</strong> Settings → Personalization → Custom
+                Instructions
+              </p>
+            </div>
           </div>
         </section>
       </div>
