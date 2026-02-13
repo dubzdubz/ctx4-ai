@@ -1,7 +1,9 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
+import { Button } from "@/components/ui/button";
 import { LinkButton } from "@/components/ui/link-button";
 
 const MCP_URL = "https://ctx4-ai.vercel.app/mcp";
@@ -38,11 +40,45 @@ function Code({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CodeBlock({ children }: { children: string }) {
+function CodeBlock({
+  children,
+  showCopy = false,
+  copyText,
+}: {
+  children: string;
+  showCopy?: boolean;
+  copyText?: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const textToCopy = copyText ?? children;
+    await navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-relaxed">
-      <code>{children}</code>
-    </pre>
+    <div className="relative">
+      <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-relaxed">
+        <code>{children}</code>
+      </pre>
+      {showCopy && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleCopy}
+          className="absolute right-2 top-2 size-8"
+          aria-label="Copy to clipboard"
+        >
+          {copied ? (
+            <Check className="size-4 text-green-600 dark:text-green-500" />
+          ) : (
+            <Copy className="size-4" />
+          )}
+        </Button>
+      )}
+    </div>
   );
 }
 
@@ -178,7 +214,9 @@ export function GettingStarted({
             is:
           </p>
           <div className="pl-10">
-            <CodeBlock>{MCP_URL}</CodeBlock>
+            <CodeBlock showCopy copyText={MCP_URL}>
+              {MCP_URL}
+            </CodeBlock>
           </div>
           <div className="pl-10 space-y-4">
             <div className="space-y-2">

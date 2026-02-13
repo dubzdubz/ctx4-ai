@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { GithubIcon } from "@/components/ui/github";
 import { LinkButton } from "@/components/ui/link-button";
 import { WrenchIcon } from "@/components/ui/wrench";
 
