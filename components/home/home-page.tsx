@@ -191,7 +191,7 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.3 }}
-          className="mt-14"
+          className="mt-24"
         >
           {/* Mobile: single column */}
           <div className="flex flex-col items-center gap-3 sm:hidden">
