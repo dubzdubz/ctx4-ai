@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Github } from "lucide-react";
 import { LAYERS_GRADIENT, LayersIcon } from "@/components/icons/layers";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -36,6 +37,21 @@ export function Navbar({ isAuthenticated }: NavbarProps) {
         </Link>
 
         <div className="flex items-center gap-1">
+          <Button
+            render={
+              <Link
+                href="https://github.com/dubzdubz/ctx4-ai"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
+            nativeButton={false}
+            variant="ghost"
+            size="sm"
+          >
+            <Github className="h-4 w-4" />
+          </Button>
+
           <Button
             render={<Link href="/docs/getting-started" />}
             nativeButton={false}
