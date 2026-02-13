@@ -5,6 +5,7 @@ import { useState } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Button } from "@/components/ui/button";
 import { LinkButton } from "@/components/ui/link-button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const MCP_URL = "https://ctx4-ai.vercel.app/mcp";
 
@@ -82,6 +83,42 @@ function CodeBlock({
   );
 }
 
+const SYSTEM_PROMPT_TEXT = `Use the ctx4 MCP to manage my long-term context and memory. Always call ctx_instructions first before using ctx_bash to understand how to interact with my context. Use it to store preferences, learnings, and anything that should persist across conversations.`;
+
+function SystemPromptTextarea() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(SYSTEM_PROMPT_TEXT);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative">
+      <textarea
+        readOnly
+        value={SYSTEM_PROMPT_TEXT}
+        className="w-full rounded-lg border bg-muted p-3 text-sm leading-relaxed resize-none font-mono"
+        rows={4}
+      />
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleCopy}
+        className="absolute right-2 top-2 size-8"
+        aria-label="Copy to clipboard"
+      >
+        {copied ? (
+          <Check className="size-4 text-green-600 dark:text-green-500" />
+        ) : (
+          <Copy className="size-4" />
+        )}
+      </Button>
+    </div>
+  );
+}
+
 type GettingStartedProps = {
   isAuthenticated: boolean;
   hasLinkedRepo: boolean;
@@ -96,8 +133,8 @@ export function GettingStarted({
   return (
     <PageLayout
       title="Getting Started"
-      description="ctx4.ai gives your AI assistants persistent context via MCP. Your preferences, knowledge, and skills live in a GitHub repo and follow you across conversations in Claude, ChatGPT, VS Code, and any MCP client."
-      maxWidth="md"
+      description="ctx4.ai gives your AI assistants persistent context via MCP. Your preferences, knowledge, and skills live in a GitHub repo and follow you across conversations in Claude, ChatGPT, Cursor, and any MCP client."
+      maxWidth="lg"
     >
       {/* Steps */}
       <div className="space-y-16">
@@ -218,33 +255,140 @@ export function GettingStarted({
               {MCP_URL}
             </CodeBlock>
           </div>
-          <div className="pl-10 space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Claude Desktop</p>
-              <CodeBlock>
-                {JSON.stringify(
-                  {
-                    mcpServers: {
-                      ctx4: {
-                        url: MCP_URL,
+          <div className="pl-10">
+            <Tabs defaultValue="claude-desktop" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+                <TabsTrigger value="claude-desktop">
+                  Claude Web/Desktop
+                </TabsTrigger>
+                <TabsTrigger value="claude-code">Claude Code</TabsTrigger>
+                <TabsTrigger value="chatgpt">ChatGPT</TabsTrigger>
+                <TabsTrigger value="cursor">Cursor</TabsTrigger>
+              </TabsList>
+
+              {/* Claude Desktop */}
+              <TabsContent value="claude-desktop" className="space-y-3 mt-4">
+                <p className="text-sm text-muted-foreground">
+                  Open Claude Desktop and navigate to Settings → Connectors →
+                  Add Custom Connector.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Enter the name as <Code>ctx4</Code> and the remote MCP server
+                  URL as:
+                </p>
+                <CodeBlock showCopy copyText={MCP_URL}>
+                  {MCP_URL}
+                </CodeBlock>
+                <p className="text-sm text-muted-foreground">
+                  Click <strong>Connect</strong> to authenticate.
+                </p>
+              </TabsContent>
+
+              {/* Claude Code */}
+              <TabsContent value="claude-code" className="space-y-3 mt-4">
+                <p className="text-sm text-muted-foreground">
+                  Open a terminal and run the following command:
+                </p>
+                <CodeBlock
+                  showCopy
+                  copyText={`claude mcp add --transport http ctx4 ${MCP_URL}`}
+                >
+                  {`claude mcp add --transport http ctx4 ${MCP_URL}`}
+                </CodeBlock>
+                <p className="text-sm text-muted-foreground">
+                  Use <Code>/mcp</Code> to connect and authenticate.
+                </p>
+              </TabsContent>
+
+              {/* Cursor */}
+              <TabsContent value="cursor" className="space-y-3 mt-4">
+                <p className="text-sm font-medium">Installation Link</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Click the button below to install directly:
+                </p>
+                <LinkButton
+                  href={`cursor://anysphere.cursor-deeplink/mcp/install?name=ctx4&config=${btoa(JSON.stringify({ url: MCP_URL }))}`}
+                  variant="outline"
+                  size="sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Add to Cursor
+                </LinkButton>
+                <p className="text-sm font-medium mt-4">Manual Installation</p>
+                <p className="text-sm text-muted-foreground">
+                  Add the following to your <Code>mcp.json</Code> file:
+                </p>
+                <CodeBlock>
+                  {JSON.stringify(
+                    {
+                      mcpServers: {
+                        ctx4: {
+                          url: MCP_URL,
+                        },
                       },
                     },
-                  },
-                  null,
-                  2,
-                )}
-              </CodeBlock>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Claude Code</p>
-              <CodeBlock>
-                {`claude mcp add --transport streamable-http ctx4 ${MCP_URL}`}
-              </CodeBlock>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              This also works with ChatGPT, VS Code, and any other client that
-              supports MCP.
-            </p>
+                    null,
+                    2,
+                  )}
+                </CodeBlock>
+              </TabsContent>
+
+              {/* ChatGPT */}
+              <TabsContent value="chatgpt" className="space-y-3 mt-4">
+                <p className="text-sm text-muted-foreground italic mb-2">
+                  Available for Pro, Plus, Business, Enterprise, and Education
+                  accounts
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Follow these steps to add ctx4.ai as an MCP app:
+                </p>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    Navigate to{" "}
+                    <strong>Settings → Apps → Advanced settings</strong>
+                  </li>
+                  <li>
+                    Enable <strong>Developer mode</strong>
+                  </li>
+                  <li>
+                    Click <strong>Create app</strong> next to Advanced settings
+                  </li>
+                  <li>Add the MCP server URL:</li>
+                </ol>
+                <CodeBlock showCopy copyText={MCP_URL}>
+                  {MCP_URL}
+                </CodeBlock>
+                <ol
+                  start={5}
+                  className="list-decimal list-inside space-y-2 text-sm text-muted-foreground mt-2"
+                >
+                  <li>
+                    Select <strong>OAuth</strong> for authentication
+                  </li>
+                  <li>
+                    Leave the OAuth fields empty (ctx4.ai handles authentication
+                    automatically)
+                  </li>
+                </ol>
+                <p className="text-sm text-muted-foreground mt-2">
+                  The app will appear in the composer's "Developer Mode" tool
+                  during conversations.
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  For detailed instructions, see{" "}
+                  <a
+                    href="https://developers.openai.com/api/docs/guides/developer-mode"
+                    className="underline underline-offset-4 hover:text-foreground transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ChatGPT's Developer Mode documentation
+                  </a>
+                  .
+                </p>
+              </TabsContent>
+            </Tabs>
           </div>
         </section>
 
@@ -254,19 +398,34 @@ export function GettingStarted({
             <StepNumber n={5} />
             <h2 className="text-xl font-semibold">Start using it</h2>
           </div>
-          <div className="pl-10 space-y-3 text-sm text-muted-foreground leading-relaxed">
-            <p>
-              Once connected, your AI client will authenticate via OAuth and
-              gain access to your context repo. Run the <Code>/onboarding</Code>{" "}
-              prompt to get set up:
-            </p>
-            <CodeBlock>Use the /onboarding prompt</CodeBlock>
-            <p>
-              The onboarding flow will scaffold your repo if needed, ask about
-              your preferences and workflow, and save everything to the right
-              files. After that, your AI will have full context about you in
-              every conversation.
-            </p>
+          <div className="pl-10 space-y-4 text-sm text-muted-foreground leading-relaxed">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                Run onboarding (optional but recommended)
+              </p>
+              <p>
+                The onboarding prompt will set up your context repo and ask a
+                few questions about your preferences:
+              </p>
+              <CodeBlock>/ctx4:onboarding</CodeBlock>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                Add system prompt (optional but recommended)
+              </p>
+              <p>
+                For best results, add this to your client's custom instructions
+                or system prompt:
+              </p>
+              <SystemPromptTextarea />
+              <p className="text-xs">
+                <strong>Claude:</strong> Settings → General → Personal
+                Preferences
+                <br />
+                <strong>ChatGPT:</strong> Settings → Personalization → Custom
+                Instructions
+              </p>
+            </div>
           </div>
         </section>
       </div>
@@ -274,15 +433,24 @@ export function GettingStarted({
       {/* Footer CTA */}
       <div className="mt-24 flex flex-col items-center gap-4 text-center">
         <p className="text-sm text-muted-foreground">Ready to get started?</p>
-        {isAuthenticated ? (
-          <LinkButton href="/settings" variant="default" size="default">
-            Settings
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {isAuthenticated ? (
+            <LinkButton href="/settings" variant="default" size="default">
+              Settings
+            </LinkButton>
+          ) : (
+            <LinkButton href="/auth/login" variant="default" size="default">
+              Sign up
+            </LinkButton>
+          )}
+          <LinkButton
+            href="/docs/how-it-works"
+            variant="outline"
+            size="default"
+          >
+            How It Works
           </LinkButton>
-        ) : (
-          <LinkButton href="/auth/login" variant="default" size="default">
-            Sign up
-          </LinkButton>
-        )}
+        </div>
       </div>
     </PageLayout>
   );

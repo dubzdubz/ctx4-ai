@@ -12,7 +12,7 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
     MCP Protocol (with bearer token)
         ↓
 [Next.js App with MCP Handler]
-  ├── /mcp, /sse, /streamable-http endpoints
+  ├── /mcp endpoint (HTTP transport)
   ├── OAuth endpoints (/auth/oauth/authorize, /api/oauth/approve)
   ├── User authorization check (allowlist)
   ├── ctx_instructions() → reads from sandbox
@@ -37,7 +37,7 @@ Next.js application with MCP server endpoints, using Vercel Sandbox (Firecracker
 - Unified codebase — MCP server and web UI in one application
 - Vercel-native deployment
 - mcp-handler provides seamless Next.js integration
-- Dynamic route handlers for multiple transports (/mcp, /sse, /streamable-http)
+- HTTP transport via dynamic route handler
 - Built-in OAuth support with withMcpAuth wrapper
 
 **Framework:** `mcp-handler` (Vercel's official Next.js MCP adapter)

@@ -20,9 +20,12 @@ How we handle UI components and design in this project.
 
 ## Component Organization
 
-- **`/components/ui/`** — shadcn components and animated-lucide icons ONLY
-  - Examples: `button.tsx`, `card.tsx`, `brain.tsx` (from animated-lucide)
+- **`/components/ui/`** — shadcn components only
+  - Examples: `button.tsx`, `card.tsx`
   - These are third-party UI components installed via shadcn CLI
+- **`/components/animated-icons/`** — Animated icons from lucide-animated
+  - Examples: `brain.tsx`, `book-text.tsx`, `wrench.tsx`, `zap.tsx`
+  - Use these for animated icons on the homepage and marketing pages
 - **`/components/icons/`** — Custom icons created for this project
   - Examples: `layers.tsx` (brand icon)
   - Use this for any SVG icons you create yourself
@@ -31,7 +34,7 @@ How we handle UI components and design in this project.
 
 - **shadcn components**: `pnpm dlx shadcn@latest add button separator badge`
 - **Aceternity components**: `pnpm dlx shadcn@latest add @aceternity/spotlight`
-- **animated-lucide icons**: `pnpm dlx shadcn@latest add @lucide-animated/brain` (or equivalent registry)
+- **animated-lucide icons**: Add via shadcn CLI, then move to `components/animated-icons/`. Example: `pnpm dlx shadcn@latest add "https://lucide-animated.com/r/brain.json"`
 
 ## Design Guidelines
 

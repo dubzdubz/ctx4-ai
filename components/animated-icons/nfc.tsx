@@ -7,31 +7,24 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-export interface WrenchIconHandle {
+export interface NfcIconHandle {
   startAnimation: () => void;
   stopAnimation: () => void;
 }
 
-interface WrenchIconProps extends HTMLAttributes<HTMLDivElement> {
+interface NfcIconProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
 const ICON_VARIANTS: Variants = {
-  normal: {
-    rotate: 0,
-    transition: { duration: 0.25, ease: "easeOut" },
-  },
+  normal: { scale: 1 },
   animate: {
-    rotate: [0, 12, -14, 4, 0],
-    transition: {
-      duration: 1.05,
-      times: [0, 0.42, 0.68, 0.88, 1],
-      ease: ["easeInOut", "easeInOut", "easeOut", "easeOut"],
-    },
+    scale: 1.08,
+    transition: { type: "spring", stiffness: 400, damping: 15 },
   },
 };
 
-const WrenchIcon = forwardRef<WrenchIconHandle, WrenchIconProps>(
+const NfcIcon = forwardRef<NfcIconHandle, NfcIconProps>(
   ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
@@ -46,24 +39,18 @@ const WrenchIcon = forwardRef<WrenchIconHandle, WrenchIconProps>(
 
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isControlledRef.current) {
-          onMouseEnter?.(e);
-        } else {
-          controls.start("animate");
-        }
+        if (isControlledRef.current) onMouseEnter?.(e);
+        else controls.start("animate");
       },
-      [controls, onMouseEnter]
+      [controls, onMouseEnter],
     );
 
     const handleMouseLeave = useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isControlledRef.current) {
-          onMouseLeave?.(e);
-        } else {
-          controls.start("normal");
-        }
+        if (isControlledRef.current) onMouseLeave?.(e);
+        else controls.start("normal");
       },
-      [controls, onMouseLeave]
+      [controls, onMouseLeave],
     );
 
     return (
@@ -71,30 +58,32 @@ const WrenchIcon = forwardRef<WrenchIconHandle, WrenchIconProps>(
         className={cn(className)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        role="img"
         {...props}
       >
         <motion.svg
           animate={controls}
           fill="none"
           height={size}
-          initial="normal"
           stroke="currentColor"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="2"
-          style={{ transformOrigin: "90% 10%", transformBox: "fill-box" }}
           variants={ICON_VARIANTS}
           viewBox="0 0 24 24"
           width={size}
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
+          <path d="M6 8.32a7.43 7.43 0 0 1 0 7.36" />
+          <path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58" />
+          <path d="M12.91 4.1a15.91 15.91 0 0 1 .01 15.8" />
+          <path d="M16.37 2a20.16 20.16 0 0 1 0 20" />
         </motion.svg>
       </div>
     );
-  }
+  },
 );
 
-WrenchIcon.displayName = "WrenchIcon";
+NfcIcon.displayName = "NfcIcon";
 
-export { WrenchIcon };
+export { NfcIcon };
