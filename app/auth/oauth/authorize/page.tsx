@@ -13,7 +13,7 @@ export default async function OAuthAuthorizePage({
 
   if (!authorizationId) {
     return (
-      <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+      <div className="flex flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-lg">
           <Alert variant="destructive" className="w-full max-w-md">
             <AlertTitle>Invalid Authorization Request</AlertTitle>
@@ -49,7 +49,7 @@ export default async function OAuthAuthorizePage({
 
   if (error || !authDetails) {
     return (
-      <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+      <div className="flex flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-lg">
           <Alert variant="destructive" className="w-full max-w-md">
             <AlertTitle>Authorization Error</AlertTitle>
@@ -71,7 +71,7 @@ export default async function OAuthAuthorizePage({
   const scopes = authDetails.scope?.trim() ? authDetails.scope.split(" ") : [];
 
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+    <div className="flex flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-lg">
         <OAuthAuthorizationForm
           user={user}

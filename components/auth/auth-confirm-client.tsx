@@ -46,7 +46,7 @@ export function AuthConfirmClient({ next }: { next: string }) {
 
   if (status === "error") {
     return (
-      <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+      <div className="flex flex-col items-center px-6 pt-24 pb-16">
         <div className="w-full max-w-sm space-y-4">
           <h1 className="text-2xl font-semibold tracking-tight">
             Invalid or expired link
@@ -63,7 +63,7 @@ export function AuthConfirmClient({ next }: { next: string }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+    <div className="flex flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-sm space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">
           Signing you in...

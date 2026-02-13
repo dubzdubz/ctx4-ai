@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { LinkButton } from "@/components/ui/link-button";
 
 const MCP_URL = "https://ctx4-ai.vercel.app/mcp";
@@ -39,17 +38,11 @@ type GettingStartedProps = {
 
 export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="bg-white">
       <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
         {/* Header */}
         <div>
-          <Link
-            href="/"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Home
-          </Link>
-          <h1 className="mt-6 text-3xl font-semibold tracking-tight md:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
             Getting Started
           </h1>
           <p className="mt-4 text-muted-foreground leading-relaxed">

@@ -1,4 +1,3 @@
-import { LogoutButton } from "@/components/auth/logout-button";
 import { GithubRepoManager } from "@/components/github/github-repo-manager";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -23,14 +22,9 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 pt-24 pb-16">
+    <div className="flex flex-col items-center px-6 pt-24 pb-16">
       <div className="w-full max-w-lg space-y-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Your account
-          </h1>
-          <LogoutButton />
-        </div>
+        <h1 className="text-2xl font-semibold tracking-tight">Your account</h1>
 
         <section className="space-y-4">
           <h2 className="text-sm font-medium text-muted-foreground">Profile</h2>
