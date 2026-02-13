@@ -60,14 +60,16 @@ export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
               and skills.
             </p>
             <div className="pl-10">
-              <a
+              <LinkButton
                 href={TEMPLATE_DEEPLINK}
+                variant="outline"
+                size="default"
+                className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80"
               >
-                Use template repo
-              </a>
+                Use template repo →
+              </LinkButton>
             </div>
             <div className="pl-10 space-y-2 text-sm text-muted-foreground">
               <p>
@@ -99,31 +101,21 @@ export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
           <section className="space-y-4">
             <div className="flex items-center gap-3">
               <StepNumber n={2} />
-              <h2 className="text-xl font-semibold">
-                Sign up &amp; connect GitHub
-              </h2>
+              <h2 className="text-xl font-semibold">Sign up</h2>
             </div>
-            <div className="pl-10 space-y-3 text-sm text-muted-foreground leading-relaxed">
-              <p>
-                <a
-                  href="/auth/login"
-                  className="underline underline-offset-4 hover:text-foreground transition-colors"
-                >
-                  Sign up
-                </a>{" "}
-                for ctx4.ai, then go to{" "}
-                <a
-                  href="/settings"
-                  className="underline underline-offset-4 hover:text-foreground transition-colors"
-                >
-                  Settings
-                </a>{" "}
-                to install the GitHub App and select the repo you just created.
-              </p>
-              <p>
-                The GitHub App gives ctx4.ai read/write access to that single
-                repo so your AI can save context there.
-              </p>
+            <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+              Create a free ctx4.ai account to link your context repo and
+              authenticate with AI clients.
+            </p>
+            <div className="pl-10">
+              <LinkButton
+                href="/auth/login"
+                variant="outline"
+                size="default"
+                className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
+              >
+                Sign up →
+              </LinkButton>
             </div>
           </section>
 
@@ -131,6 +123,29 @@ export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
           <section className="space-y-4">
             <div className="flex items-center gap-3">
               <StepNumber n={3} />
+              <h2 className="text-xl font-semibold">Connect GitHub</h2>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+              Install the ctx4.ai GitHub App and select the repo you created in
+              Step 1. The app gets read/write access to that single repo so your
+              AI can save context there.
+            </p>
+            <div className="pl-10">
+              <LinkButton
+                href="/settings"
+                variant="outline"
+                size="default"
+                className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
+              >
+                {isAuthenticated ? "Connect GitHub →" : "Go to Settings →"}
+              </LinkButton>
+            </div>
+          </section>
+
+          {/* Step 4 */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-3">
+              <StepNumber n={4} />
               <h2 className="text-xl font-semibold">Connect your AI client</h2>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed pl-10">
@@ -170,10 +185,10 @@ export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
             </div>
           </section>
 
-          {/* Step 4 */}
+          {/* Step 5 */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <StepNumber n={4} />
+              <StepNumber n={5} />
               <h2 className="text-xl font-semibold">Start using it</h2>
             </div>
             <div className="pl-10 space-y-3 text-sm text-muted-foreground leading-relaxed">
