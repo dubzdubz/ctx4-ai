@@ -39,7 +39,7 @@ type HomePageProps = {
 
 type IconHandle = { startAnimation: () => void; stopAnimation: () => void };
 
-export function HomePage({ isAuthenticated }: HomePageProps) {
+export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
   const iconRefs = useRef<(IconHandle | null)[]>([]);
 
   return (

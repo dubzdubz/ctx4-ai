@@ -21,7 +21,10 @@ function StepNumber({ n }: { n: number }) {
 function StepComplete({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50/50 px-4 py-3 text-sm dark:border-green-800 dark:bg-green-950/30">
-      <Check className="size-4 shrink-0 text-green-600 dark:text-green-500" strokeWidth={2.5} />
+      <Check
+        className="size-4 shrink-0 text-green-600 dark:text-green-500"
+        strokeWidth={2.5}
+      />
       <span className="text-muted-foreground">{children}</span>
     </div>
   );
