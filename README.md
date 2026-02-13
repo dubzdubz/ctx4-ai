@@ -27,7 +27,7 @@ MCP Client (e.g. Claude, Cursor)
   app/[transport]/route.ts  ← MCP handler (mcp-handler)
         │
         ├─ verifyToken()    ← validates Bearer JWT via Supabase JWKS
-        └─ server tools     ← your custom MCP tools (e.g. roll_dice)
+        └─ server tools     ← MCP tools (ctx_instructions, ctx_bash)
 ```
 
 The MCP handler in `app/[transport]/route.ts` responds on `/mcp` (HTTP transport). Authentication is handled by `withMcpAuth`, which delegates to `lib/auth/verify-token.ts` for JWT validation.
@@ -74,6 +74,9 @@ GITHUB_APP_ID=123456
 GITHUB_APP_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----"
 GITHUB_APP_CLIENT_ID=Iv1.xxxxxxxxxx
 GITHUB_APP_CLIENT_SECRET=xxxxxxxxxxxx
+
+# Vercel (for sandbox auth — run `vercel link && vercel env pull`)
+VERCEL_OIDC_TOKEN=your-vercel-oidc-token
 ```
 
 ### 3. Configure Supabase Auth
@@ -101,7 +104,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ## Connecting an MCP Client
 
-Add the server to your MCP client (Cursor, VS Code, etc.):
+Add the server to your MCP client (Claude, Cursor, etc.):
 
 ```json
 {
@@ -155,7 +158,6 @@ npx @mcpjam/inspector@latest
 |------|-------------|
 | `ctx_instructions` | Returns full context bootstrap (guide + instructions + context + resource/skill indexes) |
 | `ctx_bash` | Sandboxed bash in `/vercel/sandbox` with auto git commit and push |
-| `roll_dice` | Roll a dice with a specified number of sides (demo tool) |
 
 ## Project Structure
 
@@ -225,12 +227,10 @@ Edit the `requiredScopes` array in `app/[transport]/route.ts` to enforce specifi
 ```typescript
 const authHandler = withMcpAuth(handler, verifyToken, {
   required: true,
-  requiredScopes: ["openid", "email", "mcp:tools"],
+  requiredScopes: ["openid", "email"], // empty by default (no scope enforcement)
   // ...
 });
 ```
-
-Available scopes: `openid`, `email`, `profile`, `mcp:tools`, `mcp:resources`.
 
 ### Adjusting Route Protection
 
@@ -238,17 +238,17 @@ Edit `proxy.ts` and `lib/supabase/middleware.ts` to change which paths are publi
 
 ## Tech Stack
 
-| Dependency | Version | Purpose |
-|------------|---------|---------|
-| [Next.js](https://nextjs.org/) | 16 | React framework |
-| [mcp-handler](https://github.com/vercel/mcp-handler) | ^1.0.7 | MCP server adapter |
-| [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) | 1.25.2 | MCP SDK |
-| [Supabase](https://supabase.com/) | SSR + JS | Auth & database |
-| [Drizzle ORM](https://orm.drizzle.team/) | ^0.45 | Database ORM |
-| [Octokit](https://github.com/octokit/octokit.js) | ^5.0 | GitHub App integration |
-| [Shadcn UI](https://ui.shadcn.com/) | base-vega | UI components |
-| [Tailwind CSS](https://tailwindcss.com/) | v4 | Styling |
-| [Biome](https://biomejs.dev/) | ^2.3 | Linting & formatting |
+| Dependency | Purpose |
+|------------|---------|
+| [Next.js 16](https://nextjs.org/) | React framework (App Router) |
+| [mcp-handler](https://github.com/vercel/mcp-handler) | MCP server adapter for Next.js |
+| [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) | MCP SDK |
+| [Supabase](https://supabase.com/) | Auth (OAuth 2.1) & PostgreSQL |
+| [Drizzle ORM](https://orm.drizzle.team/) | Database ORM & migrations |
+| [Vercel Sandbox](https://vercel.com/docs/functions/sandboxes) | Isolated command execution (Firecracker microVM) |
+| [Octokit](https://github.com/octokit/octokit.js) | GitHub App integration |
+| [Shadcn UI](https://ui.shadcn.com/) + [Tailwind v4](https://tailwindcss.com/) | UI components & styling |
+| [Biome](https://biomejs.dev/) | Linting & formatting |
 
 ## References
 
@@ -261,4 +261,4 @@ Edit `proxy.ts` and `lib/supabase/middleware.ts` to change which paths are publi
 
 ## License
 
-MIT
+Apache-2.0 — see [LICENSE](LICENSE).
