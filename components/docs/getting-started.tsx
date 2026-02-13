@@ -134,7 +134,7 @@ export function GettingStarted({
     <PageLayout
       title="Getting Started"
       description="ctx4.ai gives your AI assistants persistent context via MCP. Your preferences, knowledge, and skills live in a GitHub repo and follow you across conversations in Claude, ChatGPT, Cursor, and any MCP client."
-      maxWidth="md"
+      maxWidth="lg"
     >
       {/* Steps */}
       <div className="space-y-16">
@@ -433,15 +433,24 @@ export function GettingStarted({
       {/* Footer CTA */}
       <div className="mt-24 flex flex-col items-center gap-4 text-center">
         <p className="text-sm text-muted-foreground">Ready to get started?</p>
-        {isAuthenticated ? (
-          <LinkButton href="/settings" variant="default" size="default">
-            Settings
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {isAuthenticated ? (
+            <LinkButton href="/settings" variant="default" size="default">
+              Settings
+            </LinkButton>
+          ) : (
+            <LinkButton href="/auth/login" variant="default" size="default">
+              Sign up
+            </LinkButton>
+          )}
+          <LinkButton
+            href="/docs/how-it-works"
+            variant="outline"
+            size="default"
+          >
+            How It Works
           </LinkButton>
-        ) : (
-          <LinkButton href="/auth/login" variant="default" size="default">
-            Sign up
-          </LinkButton>
-        )}
+        </div>
       </div>
     </PageLayout>
   );

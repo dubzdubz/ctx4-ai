@@ -132,18 +132,13 @@ export function HowItWorks() {
       {/* CTA */}
       <div className="mt-24 flex flex-col items-center gap-4 text-center">
         <p className="text-sm text-muted-foreground">Ready to try it?</p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <LinkButton
-            href="/docs/getting-started"
-            variant="default"
-            size="default"
-          >
-            Get Started
-          </LinkButton>
-          <LinkButton href="/docs/why-ctx4" variant="outline" size="default">
-            Why ctx4
-          </LinkButton>
-        </div>
+        <LinkButton
+          href="/docs/getting-started"
+          variant="default"
+          size="default"
+        >
+          Get Started
+        </LinkButton>
       </div>
     </PageLayout>
   );
