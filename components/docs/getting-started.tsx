@@ -1,5 +1,6 @@
 "use client";
 
+import { PageLayout } from "@/components/layout/page-layout";
 import { LinkButton } from "@/components/ui/link-button";
 
 const MCP_URL = "https://ctx4-ai.vercel.app/mcp";
@@ -38,23 +39,13 @@ type GettingStartedProps = {
 
 export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
   return (
-    <main className="bg-white">
-      <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-            Getting Started
-          </h1>
-          <p className="mt-4 text-muted-foreground leading-relaxed">
-            ctx4.ai gives your AI assistants persistent context via MCP. Your
-            preferences, knowledge, and skills live in a GitHub repo and follow
-            you across conversations in Claude, ChatGPT, VS Code, and any MCP
-            client.
-          </p>
-        </div>
-
-        {/* Steps */}
-        <div className="mt-16 space-y-16">
+    <PageLayout
+      title="Getting Started"
+      description="ctx4.ai gives your AI assistants persistent context via MCP. Your preferences, knowledge, and skills live in a GitHub repo and follow you across conversations in Claude, ChatGPT, VS Code, and any MCP client."
+      maxWidth="md"
+    >
+      {/* Steps */}
+      <div className="space-y-16">
           {/* Step 1 */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
@@ -202,20 +193,19 @@ export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
           </section>
         </div>
 
-        {/* Footer CTA */}
-        <div className="mt-24 flex flex-col items-center gap-4 text-center">
-          <p className="text-sm text-muted-foreground">Ready to get started?</p>
-          {isAuthenticated ? (
-            <LinkButton href="/settings" variant="default" size="default">
-              Settings
-            </LinkButton>
-          ) : (
-            <LinkButton href="/auth/login" variant="default" size="default">
-              Sign up
-            </LinkButton>
-          )}
-        </div>
+      {/* Footer CTA */}
+      <div className="mt-24 flex flex-col items-center gap-4 text-center">
+        <p className="text-sm text-muted-foreground">Ready to get started?</p>
+        {isAuthenticated ? (
+          <LinkButton href="/settings" variant="default" size="default">
+            Settings
+          </LinkButton>
+        ) : (
+          <LinkButton href="/auth/login" variant="default" size="default">
+            Sign up
+          </LinkButton>
+        )}
       </div>
-    </main>
+    </PageLayout>
   );
 }

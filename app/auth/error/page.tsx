@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { LinkButton } from "@/components/ui/link-button";
+import { PageLayout } from "@/components/layout/page-layout";
+
+export const metadata: Metadata = {
+  title: "Error — ctx4.ai",
+  description: "An error occurred during authentication.",
+};
 
 export default async function AuthErrorPage({
   searchParams,
@@ -8,22 +15,22 @@ export default async function AuthErrorPage({
   const params = await searchParams;
 
   return (
-    <div className="flex flex-col items-center px-6 pt-24 pb-16">
-      <div className="w-full max-w-sm space-y-4">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Sorry, something went wrong
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {params?.error ? (
-            <>Error: {params.error}</>
-          ) : (
-            <>An unspecified error occurred.</>
-          )}
-        </p>
+    <PageLayout
+      title="Sorry, something went wrong"
+      description={
+        params?.error ? (
+          <>Error: {params.error}</>
+        ) : (
+          <>An unspecified error occurred.</>
+        )
+      }
+      maxWidth="sm"
+    >
+      <div className="space-y-4">
         <LinkButton href="/auth/login" variant="outline" className="w-full">
           Back to login
         </LinkButton>
       </div>
-    </div>
+    </PageLayout>
   );
 }
