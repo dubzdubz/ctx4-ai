@@ -18,11 +18,20 @@ How we handle UI components and design in this project.
 
 4. **Aceternity and lucide-animated are permitted** — Add these via shadcn CLI when they add value (backgrounds, effects, animated icons). Use sparingly; keep forms and settings minimal.
 
+## Component Organization
+
+- **`/components/ui/`** — shadcn components and animated-lucide icons ONLY
+  - Examples: `button.tsx`, `card.tsx`, `brain.tsx` (from animated-lucide)
+  - These are third-party UI components installed via shadcn CLI
+- **`/components/icons/`** — Custom icons created for this project
+  - Examples: `layers.tsx` (brand icon)
+  - Use this for any SVG icons you create yourself
+
 ## Adding Components
 
 - **shadcn components**: `pnpm dlx shadcn@latest add button separator badge`
 - **Aceternity components**: `pnpm dlx shadcn@latest add @aceternity/spotlight`
-- **lucide-animated**: `pnpm dlx shadcn@latest add @lucide-animated/` (or equivalent registry)
+- **animated-lucide icons**: `pnpm dlx shadcn@latest add @lucide-animated/brain` (or equivalent registry)
 
 ## Design Guidelines
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LAYERS_GRADIENT, LayersIcon } from "@/components/icons/layers";
 import { createClient } from "@/lib/supabase/client";
 
 type NavbarProps = {
@@ -24,8 +25,11 @@ export function Navbar({ isAuthenticated }: NavbarProps) {
       <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-8">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-tight hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2 text-sm font-semibold tracking-tight hover:opacity-80 transition-opacity"
         >
+          <div className={`flex h-6 w-6 items-center justify-center rounded-sm bg-gradient-to-br ${LAYERS_GRADIENT.css}`}>
+            <LayersIcon size={14} className="text-white" />
+          </div>
           ctx4.ai
         </Link>
 
