@@ -138,6 +138,14 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
             <GithubIcon size={16} className="shrink-0" aria-hidden />
             Your data lives in your GitHub repo. You stay in control.
           </p>
+          <LinkButton
+            href="/docs/getting-started"
+            variant="link"
+            size="sm"
+            className="mt-2 text-muted-foreground"
+          >
+            Getting Started &rarr;
+          </LinkButton>
         </motion.div>
       </div>
     </main>
