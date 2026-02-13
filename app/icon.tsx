@@ -1,5 +1,8 @@
 import { ImageResponse } from "next/og";
-import { LAYERS_GRADIENT, LAYERS_SVG_PATHS } from "@/components/icons/layers";
+import {
+  LAYERS_GRADIENT,
+  LAYERS_SVG_PATHS,
+} from "@/components/icons/layers-constants";
 
 // Image metadata
 export const size = {
