@@ -89,10 +89,27 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
       <div className="mx-auto max-w-5xl px-8 py-24 md:py-32 pt-32 md:pt-40">
         {/* Hero */}
         <section className="text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0 }}
+            className="flex justify-center mb-6"
+          >
+            <div className="relative inline-flex items-center">
+              {/* Gradient glow effect */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-xl" />
+              {/* Badge */}
+              <div className="relative inline-flex items-center rounded-full border border-border bg-background/80 backdrop-blur-sm px-4 py-1.5 shadow-lg shadow-purple-500/10">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-sm font-bold tracking-wide text-transparent">
+                  ctx4.ai
+                </span>
+              </div>
+            </div>
+          </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.05 }}
             className="text-4xl font-semibold tracking-tight md:text-5xl"
           >
             A Notion for your AI agents
@@ -101,7 +118,7 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
             className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg"
           >
             Portable context and long-term memory for Claude & ChatGPT. Open
@@ -112,7 +129,7 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
             className="mt-10 flex flex-wrap items-center justify-center gap-3"
           >
             <LinkButton
@@ -273,7 +290,11 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
             ))}
           </div>
           <div className="mt-8 flex justify-center">
-            <LinkButton href="/docs/how-it-works" variant="outline" size="sm">
+            <LinkButton
+              href="/docs/getting-started"
+              variant="outline"
+              size="sm"
+            >
               Learn more
             </LinkButton>
           </div>
