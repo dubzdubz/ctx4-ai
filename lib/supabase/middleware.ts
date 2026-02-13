@@ -8,6 +8,7 @@ const MCP_TRANSPORT_PATHS = ["/mcp", "/sse", "/streamable-http"] as const;
 const PUBLIC_PATH_PREFIXES = [
   "/",
   "/.well-known",
+  "/docs",
   "/mcp",
   "/auth/login",
   "/auth/error",

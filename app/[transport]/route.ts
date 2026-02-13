@@ -1,10 +1,12 @@
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { verifyToken } from "@/lib/auth/verify-token";
+import { registerAllPrompts } from "@/lib/prompts";
 import { registerAllTools } from "@/lib/tools";
 
 const handler = createMcpHandler(
   (server) => {
     registerAllTools(server);
+    registerAllPrompts(server);
   },
   {},
   {

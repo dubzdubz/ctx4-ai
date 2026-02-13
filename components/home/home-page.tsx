@@ -43,8 +43,8 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
   const iconRefs = useRef<(IconHandle | null)[]>([]);
 
   return (
-    <main className="min-h-screen bg-[oklch(0.985_0.006_250)]">
-      <div className="mx-auto max-w-5xl px-8 py-24 md:py-32">
+    <main className="min-h-svh bg-[oklch(0.985_0.006_250)]">
+      <div className="mx-auto max-w-5xl px-8 py-24 md:py-32 pt-32 md:pt-40">
         {/* Hero */}
         <section className="text-center">
           <motion.h1
@@ -71,15 +71,13 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
             transition={{ duration: 0.4, delay: 0.15 }}
             className="mt-10"
           >
-            {isAuthenticated ? (
-              <LinkButton href="/settings" variant="default" size="default">
-                Settings
-              </LinkButton>
-            ) : (
-              <LinkButton href="/auth/login" variant="default" size="default">
-                Get Started
-              </LinkButton>
-            )}
+            <LinkButton
+              href="/docs/getting-started"
+              variant="default"
+              size="lg"
+            >
+              Get Started
+            </LinkButton>
           </motion.div>
         </section>
 
@@ -134,10 +132,18 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
             Connect Claude or ChatGPT via MCP. The AI saves what matters. Browse
             and edit anytime.
           </p>
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <GithubIcon size={16} className="shrink-0" aria-hidden />
             Your data lives in your GitHub repo. You stay in control.
-          </p>
+          </div>
+          <LinkButton
+            href="/docs/getting-started"
+            variant="link"
+            size="sm"
+            className="mt-2 text-muted-foreground"
+          >
+            Learn more &rarr;
+          </LinkButton>
         </motion.div>
       </div>
     </main>

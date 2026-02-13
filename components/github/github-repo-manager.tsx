@@ -175,7 +175,9 @@ export function GithubRepoManager({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-medium text-muted-foreground">GitHub</h2>
+        <h2 className="text-xs font-medium uppercase tracking-wider text-foreground/80">
+          GitHub
+        </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           {showRepoSelection
             ? "Select a repository to use as your context store."
@@ -286,30 +288,28 @@ export function GithubRepoManager({
                 {config.defaultBranch}
               </code>
             </div>
-            <div className="space-y-2 pt-2">
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleSelectFromExisting}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  Change Repository
-                </Button>
-                <Button
-                  onClick={handleUpdateGithubAccess}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  Update Access
-                </Button>
-              </div>
+            <div className="flex gap-2 pt-2">
+              <Button
+                onClick={handleSelectFromExisting}
+                variant="outline"
+                size="sm"
+                className="flex-1"
+              >
+                Change Repository
+              </Button>
+              <Button
+                onClick={handleUpdateGithubAccess}
+                variant="outline"
+                size="sm"
+                className="flex-1"
+              >
+                Update Access
+              </Button>
               <Button
                 onClick={handleDisconnect}
                 variant="outline"
                 size="sm"
-                className="w-full"
+                className="flex-1"
                 disabled={isDisconnecting}
               >
                 {isDisconnecting ? "Disconnecting..." : "Disconnect GitHub"}

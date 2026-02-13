@@ -52,7 +52,7 @@ export function MagicLinkForm({
   if (sent) {
     return (
       <div className={cn("w-full max-w-sm space-y-4", className)} {...props}>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
           Check your email
         </h1>
         <p className="text-sm text-muted-foreground">
@@ -66,7 +66,9 @@ export function MagicLinkForm({
   return (
     <div className={cn("w-full max-w-sm space-y-6", className)} {...props}>
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          Sign in
+        </h1>
         <p className="text-sm text-muted-foreground">
           Enter your email and we&apos;ll send you a magic link to sign in.
         </p>

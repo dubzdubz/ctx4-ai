@@ -6,11 +6,25 @@ import { Button } from "@/components/ui/button"
 
 type LinkButtonProps = ComponentProps<typeof Button> & {
   href: string
+  target?: string
+  rel?: string
 }
 
-export function LinkButton({ href, variant = "default", children, ...props }: LinkButtonProps) {
+export function LinkButton({
+  href,
+  variant = "default",
+  children,
+  target,
+  rel,
+  ...props
+}: LinkButtonProps) {
   return (
-    <Button render={<Link href={href} />} nativeButton={false} variant={variant} {...props}>
+    <Button
+      render={<Link href={href} target={target} rel={rel} />}
+      nativeButton={false}
+      variant={variant}
+      {...props}
+    >
       {children}
     </Button>
   )
