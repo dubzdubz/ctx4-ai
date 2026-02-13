@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { LinkButton } from "@/components/ui/link-button";
 
@@ -14,6 +15,15 @@ function StepNumber({ n }: { n: number }) {
     <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-semibold text-background">
       {n}
     </span>
+  );
+}
+
+function StepComplete({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50/50 px-4 py-3 text-sm dark:border-green-800 dark:bg-green-950/30">
+      <Check className="size-4 shrink-0 text-green-600 dark:text-green-500" strokeWidth={2.5} />
+      <span className="text-muted-foreground">{children}</span>
+    </div>
   );
 }
 
@@ -35,9 +45,15 @@ function CodeBlock({ children }: { children: string }) {
 
 type GettingStartedProps = {
   isAuthenticated: boolean;
+  hasLinkedRepo: boolean;
+  linkedRepoName: string | null;
 };
 
-export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
+export function GettingStarted({
+  isAuthenticated,
+  hasLinkedRepo,
+  linkedRepoName,
+}: GettingStartedProps) {
   return (
     <PageLayout
       title="Getting Started"
@@ -46,167 +62,173 @@ export function GettingStarted({ isAuthenticated }: GettingStartedProps) {
     >
       {/* Steps */}
       <div className="space-y-16">
-          {/* Step 1 */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <StepNumber n={1} />
-              <h2 className="text-xl font-semibold">
-                Create your context repo
-              </h2>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-10">
-              Click the button below to create a private repo from our template.
-              This is where your AI context will live — instructions, knowledge,
-              and skills.
-            </p>
-            <div className="pl-10">
-              <LinkButton
-                href={TEMPLATE_DEEPLINK}
-                variant="outline"
-                size="default"
-                className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
+        {/* Step 1 */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <StepNumber n={1} />
+            <h2 className="text-xl font-semibold">Create your context repo</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+            Click the button below to create a private repo from our template.
+            This is where your AI context will live — instructions, knowledge,
+            and skills.
+          </p>
+          <div className="pl-10">
+            <LinkButton
+              href={TEMPLATE_DEEPLINK}
+              variant="outline"
+              size="default"
+              className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Use template repo
+            </LinkButton>
+          </div>
+          <div className="pl-10 space-y-2 text-sm text-muted-foreground">
+            <p>
+              The template ({" "}
+              <a
+                href={TEMPLATE_REPO}
+                className="underline underline-offset-4 hover:text-foreground transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Use template repo →
-              </LinkButton>
-            </div>
-            <div className="pl-10 space-y-2 text-sm text-muted-foreground">
-              <p>
-                The template ({" "}
-                <a
-                  href={TEMPLATE_REPO}
-                  className="underline underline-offset-4 hover:text-foreground transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  dubzdubz/ctx4-data-template
-                </a>{" "}
-                ) creates this structure:
-              </p>
-              <CodeBlock>
-                {[
-                  "resources/",
-                  "  instructions.md    # Your preferences & instructions",
-                  "  context.md         # Who you are, what you do",
-                  "skills/",
-                  "  skill-creator/     # A built-in skill for creating new skills",
-                  "knowledge/           # General knowledge & memories",
-                ].join("\n")}
-              </CodeBlock>
-            </div>
-          </section>
-
-          {/* Step 2 */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <StepNumber n={2} />
-              <h2 className="text-xl font-semibold">Sign up</h2>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-10">
-              Create a free ctx4.ai account to link your context repo and
-              authenticate with AI clients.
+                dubzdubz/ctx4-data-template
+              </a>{" "}
+              ) creates this structure:
             </p>
-            <div className="pl-10">
+            <CodeBlock>
+              {[
+                "resources/",
+                "  instructions.md    # Your preferences & instructions",
+                "  context.md         # Who you are, what you do",
+                "skills/",
+                "  skill-creator/     # A built-in skill for creating new skills",
+                "knowledge/           # General knowledge & memories",
+              ].join("\n")}
+            </CodeBlock>
+          </div>
+        </section>
+
+        {/* Step 2 */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <StepNumber n={2} />
+            <h2 className="text-xl font-semibold">Sign up</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+            Create a free ctx4.ai account to link your context repo and
+            authenticate with AI clients.
+          </p>
+          <div className="pl-10 max-w-xs">
+            {isAuthenticated ? (
+              <StepComplete>Signed in</StepComplete>
+            ) : (
               <LinkButton
                 href="/auth/login"
                 variant="outline"
                 size="default"
-                className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
+                className="flex w-full items-center justify-center gap-2 px-6 py-3 text-base font-medium"
               >
-                Sign up →
+                Sign up
               </LinkButton>
-            </div>
-          </section>
+            )}
+          </div>
+        </section>
 
-          {/* Step 3 */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <StepNumber n={3} />
-              <h2 className="text-xl font-semibold">Connect GitHub</h2>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-10">
-              Install the ctx4.ai GitHub App and select the repo you created in
-              Step 1. The app gets read/write access to that single repo so your
-              AI can save context there.
-            </p>
-            <div className="pl-10">
+        {/* Step 3 */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <StepNumber n={3} />
+            <h2 className="text-xl font-semibold">Connect GitHub</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+            Install the ctx4.ai GitHub App and select the repo you created in
+            Step 1. The app gets read/write access to that single repo so your
+            AI can save context there.
+          </p>
+          <div className="pl-10 max-w-xs">
+            {hasLinkedRepo && linkedRepoName ? (
+              <StepComplete>{linkedRepoName}</StepComplete>
+            ) : (
               <LinkButton
                 href="/settings"
                 variant="outline"
                 size="default"
-                className="flex w-full max-w-xs items-center justify-center gap-2 px-6 py-3 text-base font-medium"
+                className="flex w-full items-center justify-center gap-2 px-6 py-3 text-base font-medium"
               >
-                {isAuthenticated ? "Connect GitHub →" : "Go to Settings →"}
+                {isAuthenticated ? "Connect GitHub" : "Go to Settings"}
               </LinkButton>
-            </div>
-          </section>
+            )}
+          </div>
+        </section>
 
-          {/* Step 4 */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <StepNumber n={4} />
-              <h2 className="text-xl font-semibold">Connect your AI client</h2>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-10">
-              Add the ctx4.ai MCP server to any MCP-compatible client. The MCP
-              URL is:
-            </p>
-            <div className="pl-10">
-              <CodeBlock>{MCP_URL}</CodeBlock>
-            </div>
-            <div className="pl-10 space-y-4">
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Claude Desktop</p>
-                <CodeBlock>
-                  {JSON.stringify(
-                    {
-                      mcpServers: {
-                        ctx4: {
-                          url: MCP_URL,
-                        },
+        {/* Step 4 */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <StepNumber n={4} />
+            <h2 className="text-xl font-semibold">Connect your AI client</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+            Add the ctx4.ai MCP server to any MCP-compatible client. The MCP URL
+            is:
+          </p>
+          <div className="pl-10">
+            <CodeBlock>{MCP_URL}</CodeBlock>
+          </div>
+          <div className="pl-10 space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Claude Desktop</p>
+              <CodeBlock>
+                {JSON.stringify(
+                  {
+                    mcpServers: {
+                      ctx4: {
+                        url: MCP_URL,
                       },
                     },
-                    null,
-                    2,
-                  )}
-                </CodeBlock>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Claude Code</p>
-                <CodeBlock>
-                  {`claude mcp add --transport streamable-http ctx4 ${MCP_URL}`}
-                </CodeBlock>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                This also works with ChatGPT, VS Code, and any other client that
-                supports MCP.
-              </p>
+                  },
+                  null,
+                  2,
+                )}
+              </CodeBlock>
             </div>
-          </section>
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Claude Code</p>
+              <CodeBlock>
+                {`claude mcp add --transport streamable-http ctx4 ${MCP_URL}`}
+              </CodeBlock>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              This also works with ChatGPT, VS Code, and any other client that
+              supports MCP.
+            </p>
+          </div>
+        </section>
 
-          {/* Step 5 */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <StepNumber n={5} />
-              <h2 className="text-xl font-semibold">Start using it</h2>
-            </div>
-            <div className="pl-10 space-y-3 text-sm text-muted-foreground leading-relaxed">
-              <p>
-                Once connected, your AI client will authenticate via OAuth and
-                gain access to your context repo. Run the{" "}
-                <Code>/onboarding</Code> prompt to get set up:
-              </p>
-              <CodeBlock>Use the /onboarding prompt</CodeBlock>
-              <p>
-                The onboarding flow will scaffold your repo if needed, ask about
-                your preferences and workflow, and save everything to the right
-                files. After that, your AI will have full context about you in
-                every conversation.
-              </p>
-            </div>
-          </section>
-        </div>
+        {/* Step 5 */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <StepNumber n={5} />
+            <h2 className="text-xl font-semibold">Start using it</h2>
+          </div>
+          <div className="pl-10 space-y-3 text-sm text-muted-foreground leading-relaxed">
+            <p>
+              Once connected, your AI client will authenticate via OAuth and
+              gain access to your context repo. Run the <Code>/onboarding</Code>{" "}
+              prompt to get set up:
+            </p>
+            <CodeBlock>Use the /onboarding prompt</CodeBlock>
+            <p>
+              The onboarding flow will scaffold your repo if needed, ask about
+              your preferences and workflow, and save everything to the right
+              files. After that, your AI will have full context about you in
+              every conversation.
+            </p>
+          </div>
+        </section>
+      </div>
 
       {/* Footer CTA */}
       <div className="mt-24 flex flex-col items-center gap-4 text-center">

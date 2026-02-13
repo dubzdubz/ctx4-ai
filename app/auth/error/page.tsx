@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { LinkButton } from "@/components/ui/link-button";
 import { PageLayout } from "@/components/layout/page-layout";
+import { LinkButton } from "@/components/ui/link-button";
 
 export const metadata: Metadata = {
   title: "Error — ctx4.ai",
