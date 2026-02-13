@@ -132,10 +132,9 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
             Connect Claude or ChatGPT via MCP. The AI saves what matters. Browse
             and edit anytime.
           </p>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <GithubIcon size={16} className="shrink-0" aria-hidden />
+          <p className="text-sm text-muted-foreground">
             Your data lives in your GitHub repo. You stay in control.
-          </div>
+          </p>
           <LinkButton
             href="/docs/getting-started"
             variant="link"
