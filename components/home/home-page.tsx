@@ -44,7 +44,7 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
 
   return (
     <main className="min-h-svh bg-[oklch(0.985_0.006_250)]">
-      <div className="mx-auto max-w-5xl px-8 py-24 md:py-32">
+      <div className="mx-auto max-w-5xl px-8 py-24 md:py-32 pt-32 md:pt-40">
         {/* Hero */}
         <section className="text-center">
           <motion.h1
@@ -71,15 +71,13 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
             transition={{ duration: 0.4, delay: 0.15 }}
             className="mt-10"
           >
-            {isAuthenticated ? (
-              <LinkButton href="/settings" variant="default" size="default">
-                Settings
-              </LinkButton>
-            ) : (
-              <LinkButton href="/auth/login" variant="default" size="default">
-                Get Started
-              </LinkButton>
-            )}
+            <LinkButton
+              href="/docs/getting-started"
+              variant="default"
+              size="lg"
+            >
+              Get Started
+            </LinkButton>
           </motion.div>
         </section>
 
@@ -144,7 +142,7 @@ export function HomePage({ isAuthenticated }: HomePageProps) {
             size="sm"
             className="mt-2 text-muted-foreground"
           >
-            Getting Started &rarr;
+            Learn more &rarr;
           </LinkButton>
         </motion.div>
       </div>
