@@ -1,5 +1,6 @@
 "use client";
 
+import { Code2Icon, DatabaseIcon, GiftIcon, ZapIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef } from "react";
 import { BookTextIcon } from "@/components/ui/book-text";
@@ -11,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import { LinkButton } from "@/components/ui/link-button";
 import { WrenchIcon } from "@/components/ui/wrench";
 
@@ -18,17 +20,43 @@ const features = [
   {
     icon: BrainIcon,
     title: "Personal Context",
-    description: "Who you are, what you do, and how you prefer to work.",
+    description:
+      "Your preferences, role, and working style. The AI loads this at the start of every conversation.",
   },
   {
     icon: BookTextIcon,
     title: "Knowledge Base",
-    description: "Processes, docs, and shared knowledge.",
+    description:
+      "Processes, docs, and reference material. Organized by you or the AI.",
   },
   {
     icon: WrenchIcon,
     title: "Skills",
-    description: "Routines and capabilities extracted from past conversations.",
+    description:
+      "Reusable routines and workflows. Teach the AI once, use everywhere.",
+  },
+] as const;
+
+const trustSignals = [
+  { icon: Code2Icon, label: "Open Source", sublabel: "Apache 2.0" },
+  { icon: GiftIcon, label: "Free", sublabel: "Cloud or self-hosted" },
+  {
+    icon: DatabaseIcon,
+    label: "Your Data",
+    sublabel: "Lives in your GitHub repo",
+  },
+  { icon: ZapIcon, label: "Portable", sublabel: "Works with any MCP client" },
+] as const;
+
+const howItWorksSteps = [
+  { title: "Connect", description: "Add the MCP server to Claude or ChatGPT" },
+  {
+    title: "Context loads",
+    description: "The AI reads your instructions, knowledge, and skills",
+  },
+  {
+    title: "AI remembers",
+    description: "New learnings are saved to your repo automatically",
   },
 ] as const;
 
@@ -52,23 +80,25 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
             transition={{ duration: 0.4 }}
             className="text-4xl font-semibold tracking-tight md:text-5xl"
           >
-            ctx4.ai
+            A Notion for your AI agents
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 }}
-            className="mt-4 text-muted-foreground"
+            className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg"
           >
-            Portable context via MCP for Claude & ChatGPT
+            Portable context and long-term memory for Claude & ChatGPT. Open
+            source. Works via MCP. Your data lives in your GitHub repo — you own
+            it.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
-            className="mt-10"
+            className="mt-10 flex flex-wrap items-center justify-center gap-3"
           >
             <LinkButton
               href="/docs/getting-started"
@@ -76,6 +106,9 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
               size="lg"
             >
               Get Started
+            </LinkButton>
+            <LinkButton href="/docs/how-it-works" variant="outline" size="lg">
+              How It Works
             </LinkButton>
           </motion.div>
         </section>
@@ -120,29 +153,104 @@ export function HomePage({ isAuthenticated: _isAuthenticated }: HomePageProps) {
           </div>
         </section>
 
-        <motion.div
+        {/* Trust Signals */}
+        <motion.section
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.3 }}
-          className="mt-24 flex flex-col items-center gap-4 text-center"
+          className="mt-14"
         >
-          <p className="text-sm text-muted-foreground">
-            Connect Claude or ChatGPT via MCP. The AI saves what matters. Browse
-            and edit anytime.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Your data lives in your GitHub repo. You stay in control.
-          </p>
-          <LinkButton
-            href="/docs/getting-started"
-            variant="link"
-            size="sm"
-            className="mt-2 text-muted-foreground"
-          >
-            Learn more &rarr;
-          </LinkButton>
-        </motion.div>
+          {/* Mobile: single column */}
+          <div className="flex flex-col items-center gap-3 sm:hidden">
+            {trustSignals.map((signal) => {
+              const Icon = signal.icon;
+              return (
+                <div
+                  key={signal.label}
+                  className="flex items-center gap-2 text-muted-foreground"
+                >
+                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <span className="text-sm whitespace-nowrap">
+                    {signal.label}
+                    <span className="ml-1 text-muted-foreground/60">
+                      — {signal.sublabel}
+                    </span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          {/* Desktop: 2×2 grid */}
+          <div className="hidden sm:grid grid-cols-2 items-center gap-y-3">
+            {trustSignals.map((signal, index) => {
+              const Icon = signal.icon;
+              const isLeft = index % 2 === 0;
+              return (
+                <div
+                  key={signal.label}
+                  className={`flex items-center gap-2 text-muted-foreground ${
+                    isLeft ? "justify-end pr-5" : "justify-start pl-5"
+                  }`}
+                >
+                  <Icon className="size-4 shrink-0" aria-hidden />
+                  <span className="text-sm whitespace-nowrap">
+                    {signal.label}
+                    <span className="ml-1 text-muted-foreground/60">
+                      — {signal.sublabel}
+                    </span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </motion.section>
+
+        {/* How it works teaser */}
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+          className="mt-24"
+        >
+          <h2 className="text-center text-lg font-medium text-foreground">
+            How it works
+          </h2>
+          <div className="mt-6 grid gap-8 sm:grid-cols-3">
+            {howItWorksSteps.map((step, index) => (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <Card
+                  size="sm"
+                  className="h-full transition-colors duration-200 hover:bg-muted/5"
+                >
+                  <CardHeader>
+                    <div className="flex size-9 shrink-0 mb-1 items-center justify-center rounded-lg border border-border/40 text-muted-foreground">
+                      <span className="text-xs font-semibold">{index + 1}</span>
+                    </div>
+                    <CardTitle>{step.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="leading-relaxed">
+                      {step.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <LinkButton href="/docs/how-it-works" variant="outline" size="sm">
+              Learn more
+            </LinkButton>
+          </div>
+        </motion.section>
       </div>
     </main>
   );
