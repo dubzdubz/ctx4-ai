@@ -35,9 +35,9 @@ export default function Icon() {
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Layered context icon - three stacked rounded rectangles */}
-        {LAYERS_SVG_PATHS.map((layer, i) => (
+        {LAYERS_SVG_PATHS.map((layer) => (
           <rect
-            key={i}
+            key={layer.y}
             x="2"
             y={layer.y}
             width="16"

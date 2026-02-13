@@ -30,9 +30,9 @@ export const LayersIcon = forwardRef<SVGSVGElement, LayersIconProps>(
         className={className}
       >
         {/* Layered context icon - three stacked rounded rectangles */}
-        {LAYERS_SVG_PATHS.map((layer, i) => (
+        {LAYERS_SVG_PATHS.map((layer) => (
           <rect
-            key={i}
+            key={layer.y}
             x={padding}
             y={layer.y * scale}
             width={rectWidth}
