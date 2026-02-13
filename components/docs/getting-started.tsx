@@ -5,6 +5,7 @@ import { useState } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Button } from "@/components/ui/button";
 import { LinkButton } from "@/components/ui/link-button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const MCP_URL = "https://ctx4-ai.vercel.app/mcp";
 
@@ -218,33 +219,140 @@ export function GettingStarted({
               {MCP_URL}
             </CodeBlock>
           </div>
-          <div className="pl-10 space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Claude Desktop</p>
-              <CodeBlock>
-                {JSON.stringify(
-                  {
-                    mcpServers: {
-                      ctx4: {
-                        url: MCP_URL,
+          <div className="pl-10">
+            <Tabs defaultValue="claude-desktop" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+                <TabsTrigger value="claude-desktop">
+                  Claude Web/Desktop
+                </TabsTrigger>
+                <TabsTrigger value="claude-code">Claude Code</TabsTrigger>
+                <TabsTrigger value="chatgpt">ChatGPT</TabsTrigger>
+                <TabsTrigger value="cursor">Cursor</TabsTrigger>
+              </TabsList>
+
+              {/* Claude Desktop */}
+              <TabsContent value="claude-desktop" className="space-y-3 mt-4">
+                <p className="text-sm text-muted-foreground">
+                  Open Claude Desktop and navigate to Settings → Connectors →
+                  Add Custom Connector.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Enter the name as <Code>ctx4</Code> and the remote MCP server
+                  URL as:
+                </p>
+                <CodeBlock showCopy copyText={MCP_URL}>
+                  {MCP_URL}
+                </CodeBlock>
+                <p className="text-sm text-muted-foreground">
+                  Click <strong>Connect</strong> to authenticate.
+                </p>
+              </TabsContent>
+
+              {/* Claude Code */}
+              <TabsContent value="claude-code" className="space-y-3 mt-4">
+                <p className="text-sm text-muted-foreground">
+                  Open a terminal and run the following command:
+                </p>
+                <CodeBlock
+                  showCopy
+                  copyText={`claude mcp add --transport http ctx4 ${MCP_URL}`}
+                >
+                  {`claude mcp add --transport http ctx4 ${MCP_URL}`}
+                </CodeBlock>
+                <p className="text-sm text-muted-foreground">
+                  Use <Code>/mcp</Code> to connect and authenticate.
+                </p>
+              </TabsContent>
+
+              {/* Cursor */}
+              <TabsContent value="cursor" className="space-y-3 mt-4">
+                <p className="text-sm font-medium">Installation Link</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Click the button below to install directly:
+                </p>
+                <LinkButton
+                  href={`cursor://anysphere.cursor-deeplink/mcp/install?name=ctx4&config=${btoa(JSON.stringify({ url: MCP_URL }))}`}
+                  variant="outline"
+                  size="sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Add to Cursor
+                </LinkButton>
+                <p className="text-sm font-medium mt-4">Manual Installation</p>
+                <p className="text-sm text-muted-foreground">
+                  Add the following to your <Code>mcp.json</Code> file:
+                </p>
+                <CodeBlock>
+                  {JSON.stringify(
+                    {
+                      mcpServers: {
+                        ctx4: {
+                          url: MCP_URL,
+                        },
                       },
                     },
-                  },
-                  null,
-                  2,
-                )}
-              </CodeBlock>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Claude Code</p>
-              <CodeBlock>
-                {`claude mcp add --transport streamable-http ctx4 ${MCP_URL}`}
-              </CodeBlock>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              This also works with ChatGPT, VS Code, and any other client that
-              supports MCP.
-            </p>
+                    null,
+                    2,
+                  )}
+                </CodeBlock>
+              </TabsContent>
+
+              {/* ChatGPT */}
+              <TabsContent value="chatgpt" className="space-y-3 mt-4">
+                <p className="text-sm text-muted-foreground italic mb-2">
+                  Available for Pro, Plus, Business, Enterprise, and Education
+                  accounts
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Follow these steps to add ctx4.ai as an MCP app:
+                </p>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    Navigate to{" "}
+                    <strong>Settings → Apps → Advanced settings</strong>
+                  </li>
+                  <li>
+                    Enable <strong>Developer mode</strong>
+                  </li>
+                  <li>
+                    Click <strong>Create app</strong> next to Advanced settings
+                  </li>
+                  <li>Add the MCP server URL:</li>
+                </ol>
+                <CodeBlock showCopy copyText={MCP_URL}>
+                  {MCP_URL}
+                </CodeBlock>
+                <ol
+                  start={5}
+                  className="list-decimal list-inside space-y-2 text-sm text-muted-foreground mt-2"
+                >
+                  <li>
+                    Select <strong>OAuth</strong> for authentication
+                  </li>
+                  <li>
+                    Leave the OAuth fields empty (ctx4.ai handles authentication
+                    automatically)
+                  </li>
+                </ol>
+                <p className="text-sm text-muted-foreground mt-2">
+                  The app will appear in the composer's "Developer Mode" tool
+                  during conversations.
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  For detailed instructions, see{" "}
+                  <a
+                    href="https://developers.openai.com/api/docs/guides/developer-mode"
+                    className="underline underline-offset-4 hover:text-foreground transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ChatGPT's Developer Mode documentation
+                  </a>
+                  .
+                </p>
+              </TabsContent>
+            </Tabs>
           </div>
         </section>
 
