@@ -30,7 +30,7 @@ MCP Client (e.g. Claude, Cursor)
         └─ server tools     ← your custom MCP tools (e.g. roll_dice)
 ```
 
-The MCP handler in `app/[transport]/route.ts` responds on `/mcp`, `/sse`, and `/streamable-http`. Authentication is handled by `withMcpAuth`, which delegates to `lib/auth/verify-token.ts` for JWT validation.
+The MCP handler in `app/[transport]/route.ts` responds on `/mcp` (HTTP transport). Authentication is handled by `withMcpAuth`, which delegates to `lib/auth/verify-token.ts` for JWT validation.
 
 Supabase session middleware runs via `proxy.ts`, protecting browser routes while allowing Bearer-authenticated MCP requests to pass through.
 
@@ -107,8 +107,7 @@ Add the server to your MCP client (Cursor, VS Code, etc.):
 {
   "servers": {
     "ctx4-ai": {
-      "url": "http://localhost:3000/sse",
-      "type": "http"
+      "url": "http://localhost:3000/mcp"
     }
   }
 }
@@ -119,6 +118,28 @@ The client will automatically:
 2. Register itself dynamically (if enabled)
 3. Open browser for user authorization
 4. Exchange tokens and make authenticated MCP requests
+
+### Running Onboarding (Optional but Recommended)
+
+Once connected, run the onboarding prompt to set up your context repo:
+
+```
+/ctx4:onboarding
+```
+
+This will scaffold your repo and ask a few questions about your preferences and workflow.
+
+### Adding System Prompt (Optional but Recommended)
+
+For best results, add this to your client's custom instructions or system prompt:
+
+```
+Use the ctx4 MCP to manage my long-term context and memory. Always call ctx_instructions first before using ctx_bash to understand how to interact with my context. Use it to store preferences, learnings, and anything that should persist across conversations.
+```
+
+**Where to add:**
+- **Claude**: Settings → General → Personal Preferences
+- **ChatGPT**: Settings → Personalization → Custom Instructions
 
 ### Testing with MCP Inspector
 
@@ -140,7 +161,7 @@ npx @mcpjam/inspector@latest
 
 ```
 ├── app/
-│   ├── [transport]/route.ts          # MCP handler (mcp, sse, streamable-http)
+│   ├── [transport]/route.ts          # MCP handler (HTTP transport)
 │   ├── .well-known/                  # OAuth protected resource metadata
 │   ├── api/
 │   │   ├── github/                   # GitHub App endpoints (callback, repos, select-repo, disconnect)
@@ -213,7 +234,7 @@ Available scopes: `openid`, `email`, `profile`, `mcp:tools`, `mcp:resources`.
 
 ### Adjusting Route Protection
 
-Edit `proxy.ts` and `lib/supabase/middleware.ts` to change which paths are public or protected. MCP transport routes (`/mcp`, `/sse`, `/streamable-http`) are automatically bypassed when a Bearer token is present.
+Edit `proxy.ts` and `lib/supabase/middleware.ts` to change which paths are public or protected. The MCP transport route (`/mcp`) is automatically bypassed when a Bearer token is present.
 
 ## Tech Stack
 

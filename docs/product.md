@@ -31,6 +31,18 @@ The system supports three categories of persistent memory:
 
 ## User Experience
 
+### Initial Setup
+
+Users run the `/ctx4:onboarding` prompt after connecting their MCP client. This:
+- Sets up the context repo structure if not already present
+- Asks a few questions about user preferences and workflow
+- Saves initial context to the appropriate files
+
+**Recommended system prompt** for best results:
+```
+Use the ctx4 MCP to manage my long-term context and memory. Always call ctx_instructions first before using ctx_bash to understand how to interact with my context. Use it to store preferences, learnings, and anything that should persist across conversations.
+```
+
 ### Memory Creation
 
 **AI-initiated by default** - The AI proactively notices information worth remembering and saves it. This feels magical - users don't think about memory management, it just works.
