@@ -2,6 +2,8 @@
 
 Your portable context layer for Claude & ChatGPT
 
+**Free to use:** [ctx4-ai.vercel.app](https://ctx4-ai.vercel.app/)
+
 ---
 
 ## Features
