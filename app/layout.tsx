@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { NavbarWrapper } from "@/components/nav/navbar-wrapper";
 import "./globals.css";
 
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className="antialiased">
         <NavbarWrapper />
         {children}
+        <Analytics />
       </body>
     </html>
   );
